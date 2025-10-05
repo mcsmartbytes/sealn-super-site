@@ -1,0 +1,56 @@
+
+> sealn-super-site@1.0.0 build
+> next build
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings
+
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/main/index.js
+./src/utils/supabase.ts
+./src/app/dashboard/page.tsx
+
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/17) ...
+   Generating static pages (4/17) 
+   Generating static pages (8/17) 
+   Generating static pages (12/17) 
+ ✓ Generating static pages (17/17) 
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    8.03 kB        96.1 kB
+├ ○ /_not-found                          875 B          81.5 kB
+├ ○ /admin                               1.74 kB         132 kB
+├ ○ /admin/area-helper                   1.78 kB         132 kB
+├ ○ /admin/calculator                    3.83 kB         134 kB
+├ ○ /admin/customers                     2.79 kB         133 kB
+├ λ /admin/customers/[id]                3.72 kB         134 kB
+├ ○ /admin/estimates                     4.12 kB         135 kB
+├ ○ /admin/invoices                      2.7 kB          133 kB
+├ ○ /admin/login                         1.78 kB         125 kB
+├ ○ /admin/services                      2.46 kB         133 kB
+├ λ /admin/services/edit/[id]            2.51 kB         133 kB
+├ ○ /admin/services/new                  2.34 kB         133 kB
+├ ○ /area-helper-app                     2.63 kB         126 kB
+├ ○ /area-helper-pwa                     4.17 kB         127 kB
+├ ○ /dashboard                           1.26 kB         124 kB
+└ ○ /subscribe                           2.62 kB         126 kB
++ First Load JS shared by all            80.6 kB
+  ├ chunks/472-4e2e57b95d647320.js       27.5 kB
+  ├ chunks/fd9d1056-16f14d1599bb12d9.js  51.1 kB
+  ├ chunks/main-app-51d200956a5b55e5.js  231 B
+  └ chunks/webpack-139f003dc2ab2eb2.js   1.85 kB
+
+
+λ  (Server)  server-side renders at runtime (uses getInitialProps or getServerSideProps)
+○  (Static)  automatically rendered as static HTML (uses no initial props)
+
