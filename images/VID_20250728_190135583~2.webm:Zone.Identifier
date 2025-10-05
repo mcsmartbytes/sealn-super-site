@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://cloudconvert.com/
+HostUrl=https://us-east.storage.cloudconvert.com/tasks/115c84cc-a390-4ff9-86c9-e6d89d810b34/VID_20250728_190135583~2.webm?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=cloudconvert-production%2F20250729%2Fva%2Fs3%2Faws4_request&X-Amz-Date=20250729T015329Z&X-Amz-Expires=86400&X-Amz-Signature=e0ae75d19b8cd203b02fc02583ba2976ca8253d561a2a5670c479ddca8f8702b&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22VID_20250728_190135583~2.webm%22&response-content-type=video%2Fwebm&x-id=GetObject

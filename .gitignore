@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env*.local
+.env
+
+# Vercel
+.vercel
+
+# IDE
+.vscode/
+.idea/
+
+# Large files
+*.mp4
+*.tar.gz
+*.zip
+*.mov
+*.avi
+*.mkv
+
+# Backup folders
+../sealn_stripen_website/
+../expense_tracker_windows/
+../changes/
+../mcsmartbytes_all_in_one/
