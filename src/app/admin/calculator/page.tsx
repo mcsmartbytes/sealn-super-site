@@ -429,18 +429,20 @@ export default function CalculatorPage() {
                         </p>
                         <button
                           onClick={() => {
-                            // Try to get measurement from the map component
-                            const mapEl = document.querySelector('area-bid-helper');
-                            if (mapEl) {
-                              const measurements = (mapEl as any)._measurements;
-                              if (measurements && measurements.totalArea) {
-                                const sqFt = measurements.totalArea;
+                            // Get measurement from the map component using getData() method
+                            const mapEl = document.querySelector('area-bid-helper') as any;
+                            if (mapEl && mapEl.getData) {
+                              const data = mapEl.getData();
+                              if (data && data.area_sq_ft && data.area_sq_ft > 0) {
+                                const sqFt = data.area_sq_ft;
                                 const lastItem = calcItems[calcItems.length - 1];
                                 updateQuantity(lastItem.id, parseFloat(sqFt.toFixed(1)));
                                 alert(`Area of ${sqFt.toFixed(1)} sq ft added to calculator!`);
                               } else {
                                 alert('Please draw some shapes on the map first.');
                               }
+                            } else {
+                              alert('Map component not ready. Please try again.');
                             }
                           }}
                           className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold"
