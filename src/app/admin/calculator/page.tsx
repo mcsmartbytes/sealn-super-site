@@ -422,9 +422,36 @@ export default function CalculatorPage() {
                   </button>
 
                   {showMapHelper && (
-                    <div className="mt-4 border-4 border-blue-500 rounded-lg overflow-hidden" style={{ height: '600px' }}>
-                      {/* @ts-ignore - Web component */}
-                      <area-bid-helper style={{ display: 'block', width: '100%', height: '100%' }} />
+                    <div className="mt-4 space-y-3">
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <p className="text-sm text-blue-800 mb-3">
+                          <strong>Instructions:</strong> Use the map below to measure the area, then click "Use Total Area" to add it to your calculator.
+                        </p>
+                        <button
+                          onClick={() => {
+                            // Try to get measurement from the map component
+                            const mapEl = document.querySelector('area-bid-helper');
+                            if (mapEl) {
+                              const measurements = (mapEl as any)._measurements;
+                              if (measurements && measurements.totalArea) {
+                                const sqFt = measurements.totalArea;
+                                const lastItem = calcItems[calcItems.length - 1];
+                                updateQuantity(lastItem.id, parseFloat(sqFt.toFixed(1)));
+                                alert(`Area of ${sqFt.toFixed(1)} sq ft added to calculator!`);
+                              } else {
+                                alert('Please draw some shapes on the map first.');
+                              }
+                            }
+                          }}
+                          className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold"
+                        >
+                          📐 Use Total Area in Calculator
+                        </button>
+                      </div>
+                      <div className="border-4 border-blue-500 rounded-lg overflow-hidden" style={{ height: '600px' }}>
+                        {/* @ts-ignore - Web component */}
+                        <area-bid-helper style={{ display: 'block', width: '100%', height: '100%' }} />
+                      </div>
                     </div>
                   )}
                 </div>
