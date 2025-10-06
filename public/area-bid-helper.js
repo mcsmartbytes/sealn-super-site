@@ -92,11 +92,11 @@
           .token-warning{ position:absolute; bottom:10px; left:10px; z-index:10; background:#fff3cd; color:#5c3c00; padding:8px 10px; border-radius:8px; border:1px solid #ffe69c; display:none; }
 
           @media (max-width: 768px) {
-            .panel { min-width:200px; max-width:240px; font-size:12px; transform: translateX(-100%); }
-            .panel.open { transform: translateX(0); }
+            .panel { min-width:200px; max-width:240px; font-size:12px; left: 0; transform: translateX(-110%); }
+            .panel.open { transform: translateX(10px); }
             .panel button { padding:6px 8px; font-size:12px; }
             .toggle-panel { display:block; }
-            .toggle-panel.panel-open { left: 250px; }
+            .toggle-panel.panel-open { left: 230px; }
           }
         </style>
         <button class="toggle-panel" id="toggle-btn">☰</button>

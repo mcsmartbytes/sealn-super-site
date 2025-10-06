@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import AdminNav from '@/components/AdminNav';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
+export const dynamic = 'force-dynamic';
+
 export default function Dashboard() {
   return (
     <ProtectedRoute>
