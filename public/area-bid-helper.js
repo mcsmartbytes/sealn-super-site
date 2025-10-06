@@ -83,15 +83,26 @@
           *, *::before, *::after { box-sizing: border-box; }
           :host { display:block; position:relative; min-height:400px; }
           #map { position:absolute; inset:0; }
-          .panel { position:absolute; top:10px; left:10px; z-index:10; background:#fff; padding:10px 12px; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,.18); min-width:240px; }
+          .panel { position:absolute; top:10px; left:10px; z-index:10; background:#fff; padding:10px 12px; border-radius:8px; box-shadow: 0 2px 8px rgba(0,0,0,.18); min-width:240px; max-width:280px; transition: transform 0.3s ease; }
           .panel .row{ margin-top:6px; }
-          .panel button{ margin-top:6px; width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ddd; background:#f8f8f8; cursor:pointer; }
+          .panel button{ margin-top:6px; width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ddd; background:#f8f8f8; cursor:pointer; font-size:13px; }
           .panel button:hover{ background:#f0f0f0; }
+          .toggle-panel { position:absolute; top:10px; left:10px; z-index:11; background:#2563eb; color:white; padding:10px 12px; border-radius:50%; box-shadow: 0 2px 8px rgba(0,0,0,.3); cursor:pointer; border:none; font-size:18px; width:45px; height:45px; display:none; }
+          .toggle-panel:active { background:#1d4ed8; }
           .token-warning{ position:absolute; bottom:10px; left:10px; z-index:10; background:#fff3cd; color:#5c3c00; padding:8px 10px; border-radius:8px; border:1px solid #ffe69c; display:none; }
+
+          @media (max-width: 768px) {
+            .panel { min-width:200px; max-width:240px; font-size:12px; transform: translateX(-100%); }
+            .panel.open { transform: translateX(0); }
+            .panel button { padding:6px 8px; font-size:12px; }
+            .toggle-panel { display:block; }
+            .toggle-panel.panel-open { left: 250px; }
+          }
         </style>
+        <button class="toggle-panel" id="toggle-btn">☰</button>
         <div id="map"></div>
         <div class="panel">
-          <div id="output"><strong>Draw shapes</strong> then see total area & perimeter.</div>
+          <div id="output" style="font-size:13px;"><strong>Draw shapes</strong> then see total area & perimeter.</div>
           <div class="row">
             <input id="addr-input" type="text" placeholder="Search address or place" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid #ddd;" />
             <button id="btn-search">🔎 Search</button>
@@ -212,6 +223,16 @@
       const btnSave = this.shadowRoot.getElementById('btn-save');
       const addrInput = this.shadowRoot.getElementById('addr-input');
       const btnSearch = this.shadowRoot.getElementById('btn-search');
+
+      // Mobile toggle button for collapsible panel
+      const toggleBtn = this.shadowRoot.getElementById('toggle-btn');
+      const panel = this.shadowRoot.querySelector('.panel');
+      if (toggleBtn && panel) {
+        toggleBtn.addEventListener('click', () => {
+          panel.classList.toggle('open');
+          toggleBtn.classList.toggle('panel-open');
+        });
+      }
 
       btnPoly.addEventListener('click', () => {
         // Cancel any active freehand drawing
