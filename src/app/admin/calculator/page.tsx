@@ -40,15 +40,26 @@ export default function CalculatorPage() {
 
   useEffect(() => {
     // Fetch services from database
-    supabase
-      .from("services")
-      .select("id, name, category, base_price, unit")
-      .eq("is_active", true)
-      .order("name")
-      .then(({ data, error }) => {
-        if (error) console.error("Error fetching services:", error);
-        else setServices(data || []);
-      });
+    async function fetchServices() {
+      const { data, error } = await supabase
+        .from("services")
+        .select("id, name, category, base_price, unit")
+        .eq("is_active", true)
+        .order("name");
+
+      if (error) {
+        console.error("Error fetching services:", error);
+        alert("Error loading services. Please check the database connection.");
+      } else if (!data || data.length === 0) {
+        console.warn("No active services found in database");
+        alert("No services found. Please add services in the Services page first.");
+      } else {
+        console.log("Services loaded:", data.length);
+        setServices(data);
+      }
+    }
+
+    fetchServices();
 
     // Set Mapbox token for area helper
     if (typeof window !== 'undefined') {
@@ -71,16 +82,23 @@ export default function CalculatorPage() {
 
   function handleServiceChange(itemId: string, serviceId: string) {
     const service = services.find(s => s.id === serviceId);
+    console.log("Service selected:", service);
+
     if (service) {
+      const unitPrice = service.base_price || 0;
+      console.log("Setting unit price:", unitPrice);
+
       setCalcItems(calcItems.map(item =>
         item.id === itemId ? {
           ...item,
           service_id: serviceId,
           service_name: service.name,
-          unit_price: service.base_price || 0,
-          total: item.quantity * (service.base_price || 0)
+          unit_price: unitPrice,
+          total: item.quantity * unitPrice
         } : item
       ));
+    } else {
+      console.error("Service not found for ID:", serviceId);
     }
   }
 

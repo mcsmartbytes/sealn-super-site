@@ -126,7 +126,8 @@ function CustomerDetail() {
         filename: fileName,
         original_filename: file.name,
         file_type: file.type.startsWith('image/') ? 'photo' : 'video',
-        file_size: file.size
+        file_size: file.size,
+        public_url: publicUrl
       }]);
 
       fetchMedia();
@@ -163,10 +164,22 @@ function CustomerDetail() {
             <p className="text-gray-600">{customer.email}</p>
           </div>
           <div className="flex gap-3">
-            <button className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+            <button
+              onClick={() => {
+                sessionStorage.setItem('preselectedCustomer', JSON.stringify(customer));
+                router.push('/admin/estimates');
+              }}
+              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+            >
               + Create Estimate
             </button>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            <button
+              onClick={() => {
+                sessionStorage.setItem('preselectedCustomer', JSON.stringify(customer));
+                router.push('/admin/invoices');
+              }}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
               + Create Invoice
             </button>
           </div>
@@ -344,8 +357,26 @@ function CustomerDetail() {
                             <div className="grid grid-cols-4 gap-2">
                               {jobMedia.map((item) => (
                                 <div key={item.id} className="relative border rounded p-1 hover:shadow-lg transition">
-                                  <div className="aspect-square bg-gray-200 rounded flex items-center justify-center text-2xl">
-                                    {item.file_type === 'photo' ? '🖼️' : '🎥'}
+                                  <div className="aspect-square bg-gray-200 rounded overflow-hidden">
+                                    {item.public_url ? (
+                                      item.file_type === 'photo' ? (
+                                        <img
+                                          src={item.public_url}
+                                          alt={item.original_filename}
+                                          className="w-full h-full object-cover"
+                                        />
+                                      ) : (
+                                        <video
+                                          src={item.public_url}
+                                          className="w-full h-full object-cover"
+                                          controls
+                                        />
+                                      )
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center text-2xl">
+                                        {item.file_type === 'photo' ? '🖼️' : '🎥'}
+                                      </div>
+                                    )}
                                   </div>
                                   <p className="text-xs truncate mt-1">{item.original_filename}</p>
                                   <button
@@ -391,11 +422,30 @@ function CustomerDetail() {
               <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {media.map((item) => (
                   <div key={item.id} className="border rounded p-3 hover:shadow-lg transition">
-                    <div className="aspect-square bg-gray-200 rounded mb-2 flex items-center justify-center">
-                      {item.file_type === 'photo' ? (
-                        <span className="text-4xl">🖼️</span>
+                    <div className="aspect-square bg-gray-200 rounded mb-2 overflow-hidden">
+                      {item.public_url ? (
+                        item.file_type === 'photo' ? (
+                          <img
+                            src={item.public_url}
+                            alt={item.original_filename}
+                            className="w-full h-full object-cover cursor-pointer"
+                            onClick={() => window.open(item.public_url, '_blank')}
+                          />
+                        ) : (
+                          <video
+                            src={item.public_url}
+                            className="w-full h-full object-cover"
+                            controls
+                          />
+                        )
                       ) : (
-                        <span className="text-4xl">🎥</span>
+                        <div className="w-full h-full flex items-center justify-center">
+                          {item.file_type === 'photo' ? (
+                            <span className="text-4xl">🖼️</span>
+                          ) : (
+                            <span className="text-4xl">🎥</span>
+                          )}
+                        </div>
                       )}
                     </div>
                     <p className="text-sm font-medium truncate">{item.original_filename}</p>
