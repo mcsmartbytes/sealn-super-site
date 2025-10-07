@@ -2,10 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { supabase } from '@/utils/supabase';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: NextRequest) {
   try {
+    // Lazy initialize Resend to avoid build-time errors
+    if (!process.env.RESEND_API_KEY) {
+      return NextResponse.json({
+        error: 'Email service not configured. Please add RESEND_API_KEY to environment variables.'
+      }, { status: 503 });
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const { invoiceId, recipientEmail, recipientName } = await request.json();
 
     // Fetch invoice data
