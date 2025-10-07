@@ -50,6 +50,25 @@ export default function EstimateForm({ onAdd }: any) {
         if (error) console.error("Error fetching services:", error);
         else setServices(data || []);
       });
+
+    // Load calculator items from sessionStorage if coming from calculator
+    const calcItems = sessionStorage.getItem("calculatorItems");
+    if (calcItems) {
+      try {
+        const items = JSON.parse(calcItems);
+        const convertedItems = items.map((item: any) => ({
+          id: crypto.randomUUID(),
+          service_id: item.service_id || "",
+          description: item.service_name || item.description || "",
+          quantity: item.quantity || 1,
+          unit_price: item.unit_price || 0
+        }));
+        setLineItems(convertedItems);
+        sessionStorage.removeItem("calculatorItems"); // Clear after loading
+      } catch (error) {
+        console.error("Error loading calculator items:", error);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -74,7 +93,8 @@ export default function EstimateForm({ onAdd }: any) {
   }
 
   function handleServiceChange(id: string, serviceId: string) {
-    const service = services.find(s => s.id === serviceId);
+    const numericServiceId = parseInt(serviceId);
+    const service = services.find(s => s.id === numericServiceId);
     if (service) {
       setLineItems(lineItems.map(item =>
         item.id === id ? {
