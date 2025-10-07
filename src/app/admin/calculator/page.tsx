@@ -17,7 +17,7 @@ interface CalcItem {
 }
 
 interface Service {
-  id: string;
+  id: number;
   name: string;
   category: string;
   base_price: number;
@@ -49,12 +49,7 @@ export default function CalculatorPage() {
 
       if (error) {
         console.error("Error fetching services:", error);
-        alert("Error loading services. Please check the database connection.");
-      } else if (!data || data.length === 0) {
-        console.warn("No active services found in database");
-        alert("No services found. Please add services in the Services page first.");
-      } else {
-        console.log("Services loaded:", data.length);
+      } else if (data && data.length > 0) {
         setServices(data);
       }
     }
@@ -81,13 +76,11 @@ export default function CalculatorPage() {
   }, [length, width]);
 
   function handleServiceChange(itemId: string, serviceId: string) {
-    const service = services.find(s => s.id === serviceId);
-    console.log("Service selected:", service);
+    const numericServiceId = parseInt(serviceId);
+    const service = services.find(s => s.id === numericServiceId);
 
     if (service) {
       const unitPrice = service.base_price || 0;
-      console.log("Setting unit price:", unitPrice);
-
       setCalcItems(calcItems.map(item =>
         item.id === itemId ? {
           ...item,
@@ -97,8 +90,6 @@ export default function CalculatorPage() {
           total: item.quantity * unitPrice
         } : item
       ));
-    } else {
-      console.error("Service not found for ID:", serviceId);
     }
   }
 
