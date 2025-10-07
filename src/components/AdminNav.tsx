@@ -29,6 +29,9 @@ export default function AdminNav() {
           <Link href="/admin/customers" className="hover:text-brand-gold transition">
             Customers
           </Link>
+          <Link href="/admin/inquiries" className="hover:text-brand-gold transition">
+            Inquiries
+          </Link>
           <Link href="/admin/services" className="hover:text-brand-gold transition">
             Services
           </Link>
