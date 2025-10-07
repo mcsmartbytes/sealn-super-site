@@ -1,6 +1,46 @@
 "use client";
 
+import { useState } from "react";
+
 export default function EstimateTable({ estimates, loading, onDelete }: any) {
+  const [sendingEmail, setSendingEmail] = useState<number | null>(null);
+
+  async function handleSendEmail(estimate: any) {
+    if (!estimate.customers?.email) {
+      alert("Customer email not found!");
+      return;
+    }
+
+    const confirmed = confirm(`Send estimate to ${estimate.customers.email}?`);
+    if (!confirmed) return;
+
+    setSendingEmail(estimate.id);
+
+    try {
+      const response = await fetch('/api/send-estimate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          estimateId: estimate.id,
+          recipientEmail: estimate.customers.email,
+          recipientName: estimate.customers.name
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('✓ Estimate sent successfully!');
+      } else {
+        alert(`Failed to send email: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Error sending email. Please try again.');
+      console.error('Email error:', error);
+    } finally {
+      setSendingEmail(null);
+    }
+  }
   if (loading)
     return <p className="text-center text-gray-500">Loading estimates...</p>;
 
@@ -46,7 +86,14 @@ export default function EstimateTable({ estimates, loading, onDelete }: any) {
               <td className="p-3">
                 {new Date(e.created_at).toLocaleDateString()}
               </td>
-              <td className="p-3">
+              <td className="p-3 space-x-2">
+                <button
+                  onClick={() => handleSendEmail(e)}
+                  disabled={sendingEmail === e.id}
+                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:bg-gray-400"
+                >
+                  {sendingEmail === e.id ? '📧 Sending...' : '📧 Send Email'}
+                </button>
                 <button
                   onClick={() => onDelete(e.id)}
                   className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"

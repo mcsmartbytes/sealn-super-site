@@ -1,6 +1,46 @@
 "use client";
 
+import { useState } from "react";
+
 export default function InvoiceTable({ invoices, loading, onDelete }: any) {
+  const [sendingEmail, setSendingEmail] = useState<number | null>(null);
+
+  async function handleSendEmail(invoice: any) {
+    if (!invoice.customers?.email) {
+      alert("Customer email not found!");
+      return;
+    }
+
+    const confirmed = confirm(`Send invoice to ${invoice.customers.email}?`);
+    if (!confirmed) return;
+
+    setSendingEmail(invoice.id);
+
+    try {
+      const response = await fetch('/api/send-invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          invoiceId: invoice.id,
+          recipientEmail: invoice.customers.email,
+          recipientName: invoice.customers.name
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('✓ Invoice sent successfully!');
+      } else {
+        alert(`Failed to send email: ${data.error}`);
+      }
+    } catch (error) {
+      alert('Error sending email. Please try again.');
+      console.error('Email error:', error);
+    } finally {
+      setSendingEmail(null);
+    }
+  }
   if (loading)
     return <p className="text-center text-gray-500">Loading invoices...</p>;
 
@@ -61,7 +101,14 @@ export default function InvoiceTable({ invoices, loading, onDelete }: any) {
                   <span className="text-gray-400 text-sm">—</span>
                 )}
               </td>
-              <td className="p-3">
+              <td className="p-3 space-x-2">
+                <button
+                  onClick={() => handleSendEmail(i)}
+                  disabled={sendingEmail === i.id}
+                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:bg-gray-400"
+                >
+                  {sendingEmail === i.id ? '📧 Sending...' : '📧 Send Email'}
+                </button>
                 <button
                   onClick={() => onDelete(i.id)}
                   className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
