@@ -399,6 +399,95 @@
       });
       this._map.on('mouseup', () => finishFreehand());
 
+      // TOUCH SUPPORT FOR TABLETS/MOBILE
+      // Add touch event listeners to the map canvas
+      const canvas = this._map.getCanvas();
+
+      canvas.addEventListener('touchstart', (e) => {
+        if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
+
+        // Check if in freehand mode
+        if (this._mode === 'freehand') {
+          e.preventDefault(); // Prevent default touch behavior
+
+          const touch = e.touches[0];
+          const rect = canvas.getBoundingClientRect();
+          const point = this._map.unproject([
+            touch.clientX - rect.left,
+            touch.clientY - rect.top
+          ]);
+
+          this._freehand.active = true;
+          this._freehand.points = [[point.lng, point.lat]];
+          this._map.dragPan.disable();
+
+          // Create temporary preview layer
+          if (!this._map.getSource('freehand-preview')) {
+            this._map.addSource('freehand-preview', {
+              type: 'geojson',
+              data: { type: 'FeatureCollection', features: [] }
+            });
+            this._map.addLayer({
+              id: 'freehand-preview',
+              type: 'line',
+              source: 'freehand-preview',
+              paint: {
+                'line-color': '#3b82f6',
+                'line-width': 3,
+                'line-opacity': 0.8,
+                'line-dasharray': [2, 2]
+              }
+            });
+            this._freehand.tempLayer = true;
+          }
+        }
+      }, { passive: false });
+
+      canvas.addEventListener('touchmove', (e) => {
+        if (!this._freehand.active) return;
+        e.preventDefault(); // Prevent scrolling while drawing
+
+        const touch = e.touches[0];
+        const rect = canvas.getBoundingClientRect();
+        const point = this._map.unproject([
+          touch.clientX - rect.left,
+          touch.clientY - rect.top
+        ]);
+
+        const last = this._freehand.points[this._freehand.points.length - 1];
+        const curr = [point.lng, point.lat];
+
+        // Dynamic threshold based on zoom
+        const zoom = this._map.getZoom();
+        const threshold = 0.00002 * Math.pow(2, 15 - zoom);
+
+        const dx = curr[0] - last[0];
+        const dy = curr[1] - last[1];
+        if (Math.abs(dx) > threshold || Math.abs(dy) > threshold) {
+          this._freehand.points.push(curr);
+
+          // Update preview line
+          if (this._map.getSource('freehand-preview')) {
+            this._map.getSource('freehand-preview').setData({
+              type: 'FeatureCollection',
+              features: [{
+                type: 'Feature',
+                geometry: {
+                  type: 'LineString',
+                  coordinates: this._freehand.points
+                }
+              }]
+            });
+          }
+        }
+      }, { passive: false });
+
+      canvas.addEventListener('touchend', () => {
+        if (this._freehand.active) {
+          finishFreehand();
+        }
+      });
+
       btnCircle.addEventListener('click', () => {
         // Cancel any active freehand drawing
         if (this._freehand.active) {
