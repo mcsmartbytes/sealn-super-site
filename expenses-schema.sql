@@ -11,13 +11,17 @@ CREATE TABLE IF NOT EXISTS expenses (
   payment_method VARCHAR(50),
   receipt_url TEXT,
   notes TEXT,
+  customer_id UUID REFERENCES customers(id) ON DELETE SET NULL,
+  job_id UUID REFERENCES jobs(id) ON DELETE SET NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
 );
 
--- Create index for better performance
+-- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_expenses_date ON expenses(date DESC);
 CREATE INDEX IF NOT EXISTS idx_expenses_category ON expenses(category);
+CREATE INDEX IF NOT EXISTS idx_expenses_customer ON expenses(customer_id);
+CREATE INDEX IF NOT EXISTS idx_expenses_job ON expenses(job_id);
 
 -- Add trigger for updated_at
 CREATE TRIGGER update_expenses_updated_at BEFORE UPDATE ON expenses

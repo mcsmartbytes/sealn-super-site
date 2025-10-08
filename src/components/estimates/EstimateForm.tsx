@@ -171,7 +171,7 @@ export default function EstimateForm({ onAdd }: any) {
       description: item.description,
       quantity: item.quantity,
       unit_price: item.unit_price,
-      total: item.quantity * item.unit_price
+      total_price: item.quantity * item.unit_price
     }));
 
     const { error: itemsError } = await supabase

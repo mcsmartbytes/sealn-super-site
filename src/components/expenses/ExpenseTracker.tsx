@@ -12,6 +12,10 @@ interface Expense {
   payment_method: string | null;
   receipt_url: string | null;
   notes: string | null;
+  customer_id: string | null;
+  job_id: string | null;
+  customers?: { name: string };
+  jobs?: { job_name: string };
   created_at: string;
 }
 
@@ -55,6 +59,8 @@ export default function ExpenseTracker({
   const [showForm, setShowForm] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [filter, setFilter] = useState<string>("all");
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<any[]>([]);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -64,24 +70,63 @@ export default function ExpenseTracker({
     amount: "",
     payment_method: "Cash",
     notes: "",
+    customer_id: "",
+    job_id: "",
   });
 
   useEffect(() => {
     fetchExpenses();
+    fetchCustomers();
   }, [filter]);
+
+  useEffect(() => {
+    if (formData.customer_id) {
+      fetchJobs(formData.customer_id);
+    } else {
+      setJobs([]);
+      setFormData(prev => ({ ...prev, job_id: "" }));
+    }
+  }, [formData.customer_id]);
+
+  async function fetchCustomers() {
+    const { data, error } = await supabase
+      .from("customers")
+      .select("id, name")
+      .order("name");
+
+    if (!error && data) {
+      setCustomers(data);
+    }
+  }
+
+  async function fetchJobs(customerId: string) {
+    const { data, error } = await supabase
+      .from("jobs")
+      .select("id, job_name")
+      .eq("customer_id", customerId)
+      .order("created_at", { ascending: false });
+
+    if (!error && data) {
+      setJobs(data);
+    }
+  }
 
   async function fetchExpenses() {
     setLoading(true);
     let query = supabase
       .from("expenses")
-      .select("*")
+      .select(`
+        *,
+        customers (name),
+        jobs (job_name)
+      `)
       .order("date", { ascending: false });
 
     if (filter !== "all") {
       query = query.eq("category", filter);
     }
 
-    const { data, error } = await query;
+    const { data, error} = await query;
 
     if (error) {
       console.error("Error fetching expenses:", error);
@@ -102,6 +147,8 @@ export default function ExpenseTracker({
       amount: parseFloat(formData.amount),
       payment_method: formData.payment_method,
       notes: formData.notes || null,
+      customer_id: formData.customer_id || null,
+      job_id: formData.job_id || null,
     };
 
     if (editingExpense) {
@@ -152,6 +199,8 @@ export default function ExpenseTracker({
       amount: expense.amount.toString(),
       payment_method: expense.payment_method || "Cash",
       notes: expense.notes || "",
+      customer_id: expense.customer_id || "",
+      job_id: expense.job_id || "",
     });
     setShowForm(true);
   }
@@ -181,6 +230,8 @@ export default function ExpenseTracker({
       amount: "",
       payment_method: "Cash",
       notes: "",
+      customer_id: "",
+      job_id: "",
     });
     setEditingExpense(null);
     setShowForm(false);
@@ -276,6 +327,43 @@ export default function ExpenseTracker({
                 {EXPENSE_CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
                     {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Customer (Optional)
+              </label>
+              <select
+                value={formData.customer_id}
+                onChange={(e) => setFormData({ ...formData, customer_id: e.target.value })}
+                className="w-full border border-gray-300 rounded px-3 py-2"
+              >
+                <option value="">None - General Expense</option>
+                {customers.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Job (Optional)
+              </label>
+              <select
+                value={formData.job_id}
+                onChange={(e) => setFormData({ ...formData, job_id: e.target.value })}
+                className="w-full border border-gray-300 rounded px-3 py-2"
+                disabled={!formData.customer_id}
+              >
+                <option value="">None - General for Customer</option>
+                {jobs.map((j) => (
+                  <option key={j.id} value={j.id}>
+                    {j.job_name}
                   </option>
                 ))}
               </select>
@@ -420,6 +508,9 @@ export default function ExpenseTracker({
                     Category
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Customer/Job
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Description
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -443,6 +534,18 @@ export default function ExpenseTracker({
                       <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                         {expense.category}
                       </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {expense.customers?.name ? (
+                        <div>
+                          <div className="font-medium text-gray-900">{expense.customers.name}</div>
+                          {expense.jobs?.job_name && (
+                            <div className="text-xs text-gray-500">Job: {expense.jobs.job_name}</div>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-gray-400 italic">General</span>
+                      )}
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900">
