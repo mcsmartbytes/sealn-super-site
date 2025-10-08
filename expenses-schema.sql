@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS expenses (
   payment_method VARCHAR(50),
   receipt_url TEXT,
   notes TEXT,
-  customer_id UUID REFERENCES customers(id) ON DELETE SET NULL,
-  job_id UUID REFERENCES jobs(id) ON DELETE SET NULL,
+  customer_id INTEGER REFERENCES customers(id) ON DELETE SET NULL,
+  job_id INTEGER REFERENCES jobs(id) ON DELETE SET NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
 );
