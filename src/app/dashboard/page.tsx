@@ -146,7 +146,7 @@ function DashboardContent() {
         {/* Quick Actions */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">
           <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-5 gap-4">
             <button
               onClick={() => router.push('/admin/customers')}
               className="p-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold flex items-center justify-center gap-2"
@@ -160,6 +160,13 @@ function DashboardContent() {
             >
               <span>📄</span>
               <span>New Estimate</span>
+            </button>
+            <button
+              onClick={() => router.push('/admin/expenses')}
+              className="p-4 bg-orange-600 text-white rounded-lg hover:bg-orange-700 font-semibold flex items-center justify-center gap-2"
+            >
+              <span>💰</span>
+              <span>Expenses</span>
             </button>
             <button
               onClick={() => router.push('/admin/calculator')}
