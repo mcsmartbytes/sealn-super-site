@@ -83,8 +83,17 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <a href="/" className="text-brand-navy hover:text-brand-gold transition">
+        <div className="mt-6 text-center space-y-2">
+          <p className="text-gray-600">
+            Don't have an account?{' '}
+            <button
+              onClick={() => router.push('/admin/signup')}
+              className="text-brand-navy hover:text-brand-gold font-semibold"
+            >
+              Sign Up
+            </button>
+          </p>
+          <a href="/" className="block text-brand-navy hover:text-brand-gold transition">
             ← Back to Home
           </a>
         </div>
