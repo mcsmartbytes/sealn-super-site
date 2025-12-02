@@ -191,10 +191,11 @@ export default function EstimateForm({ onAdd }: any) {
     // Create line items
     const itemsToInsert = lineItems.map(item => ({
       estimate_id: estimate.id,
-      description: item.description,
+      service_id: item.service_id ? parseInt(item.service_id) : null,
       quantity: item.quantity,
       unit_price: item.unit_price,
-      total_price: item.quantity * item.unit_price
+      total_price: item.quantity * item.unit_price,
+      notes: item.description || null
     }));
 
     const { error: itemsError } = await supabase
