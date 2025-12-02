@@ -178,7 +178,7 @@ export default function EstimateForm({ onAdd }: any) {
 
     if (estimateError) {
       console.error("Error creating estimate:", estimateError);
-      alert("Failed to create estimate");
+      alert(`Failed to create estimate: ${estimateError.message || 'Unknown error'}`);
       setSubmitting(false);
       return;
     }
