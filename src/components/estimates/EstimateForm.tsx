@@ -15,6 +15,9 @@ export default function EstimateForm({ onAdd }: any) {
   const [form, setForm] = useState({
     customer_id: "",
     job_id: "",
+    service_type: "sealcoating",
+    lot_size: "",
+    condition: "good",
     description: "",
     status: "pending",
   });
@@ -72,16 +75,15 @@ export default function EstimateForm({ onAdd }: any) {
       }
     }
 
-    // If coming from Area Bid Pro, also load the notes into description
+    // If coming from Area Bid Pro, also load the data into form
     if (areaBidData) {
       try {
         const abpData = JSON.parse(areaBidData);
-        if (abpData.notes) {
-          setForm(prev => ({
-            ...prev,
-            description: `Area Bid Pro Measurement:\nTotal Area: ${abpData.totalArea?.toFixed(0) || 0} sq ft\nPerimeter: ${abpData.totalPerimeter?.toFixed(0) || 0} ft\n${abpData.shapes?.length > 1 ? `Shapes: ${abpData.shapes.length}\n` : ''}${abpData.notes ? `Notes: ${abpData.notes}` : ''}`
-          }));
-        }
+        setForm(prev => ({
+          ...prev,
+          lot_size: abpData.totalArea ? abpData.totalArea.toFixed(0) : "",
+          description: `Area Bid Pro Measurement:\nTotal Area: ${abpData.totalArea?.toFixed(0) || 0} sq ft\nPerimeter: ${abpData.totalPerimeter?.toFixed(0) || 0} ft\n${abpData.shapes?.length > 1 ? `Shapes: ${abpData.shapes.length}\n` : ''}${abpData.notes ? `Notes: ${abpData.notes}` : ''}`
+        }));
         sessionStorage.removeItem("areaBidProData"); // Clear after loading
       } catch (error) {
         console.error("Error loading Area Bid Pro data:", error);
@@ -169,6 +171,9 @@ export default function EstimateForm({ onAdd }: any) {
       .insert([{
         customer_id: form.customer_id,
         job_id: form.job_id || null,
+        service_type: form.service_type,
+        lot_size: form.lot_size ? parseFloat(form.lot_size) : null,
+        condition: form.condition,
         estimated_cost: total,
         description: form.description,
         status: form.status,
@@ -230,7 +235,7 @@ export default function EstimateForm({ onAdd }: any) {
     }
 
     // Reset form
-    setForm({ customer_id: "", job_id: "", description: "", status: "pending" });
+    setForm({ customer_id: "", job_id: "", service_type: "sealcoating", lot_size: "", condition: "good", description: "", status: "pending" });
     setLineItems([{ id: crypto.randomUUID(), service_id: "", description: "", quantity: 1, unit_price: 0 }]);
     setPhotos([]);
     setSubmitting(false);
@@ -279,6 +284,55 @@ export default function EstimateForm({ onAdd }: any) {
                 {j.job_name}
               </option>
             ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Service Type *
+          </label>
+          <select
+            value={form.service_type}
+            onChange={(e) => setForm({ ...form, service_type: e.target.value })}
+            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="sealcoating">Sealcoating</option>
+            <option value="striping">Line Striping</option>
+            <option value="crack_filling">Crack Filling</option>
+            <option value="patching">Patching</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Lot Size (sq ft)
+          </label>
+          <input
+            type="number"
+            value={form.lot_size}
+            onChange={(e) => setForm({ ...form, lot_size: e.target.value })}
+            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+            placeholder="e.g. 5000"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Surface Condition
+          </label>
+          <select
+            value={form.condition}
+            onChange={(e) => setForm({ ...form, condition: e.target.value })}
+            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="good">Good</option>
+            <option value="fair">Fair</option>
+            <option value="poor">Poor</option>
           </select>
         </div>
       </div>
