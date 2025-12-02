@@ -67,7 +67,7 @@ export default function EstimateTable({ estimates, loading, onDelete }: any) {
           {estimates.map((e: any) => (
             <tr key={e.id} className="border-t hover:bg-gray-50">
               <td className="p-3">{e.customers?.name || "—"}</td>
-              <td className="p-3">${Number(e.amount).toFixed(2)}</td>
+              <td className="p-3">${Number(e.estimated_cost || 0).toFixed(2)}</td>
               <td className="p-3">
                 <span
                   className={`px-2 py-1 rounded text-xs font-semibold ${

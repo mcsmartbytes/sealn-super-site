@@ -169,7 +169,7 @@ export default function EstimateForm({ onAdd }: any) {
       .insert([{
         customer_id: form.customer_id,
         job_id: form.job_id || null,
-        amount: total,
+        estimated_cost: total,
         description: form.description,
         status: form.status,
       }])
