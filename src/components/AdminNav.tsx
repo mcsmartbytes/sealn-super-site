@@ -44,6 +44,9 @@ export default function AdminNav() {
           <Link href="/admin/area-helper" className="hover:text-brand-gold transition">
             Area Helper
           </Link>
+          <Link href="/admin/expense-tracker" className="hover:text-brand-gold transition">
+            Expense Tracker
+          </Link>
           <Link href="/" className="hover:text-brand-gold transition">
             View Site
           </Link>

@@ -198,14 +198,9 @@ function DashboardContent() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Expense Tracker */}
-            <a
-              href="https://expenses-made-easy-opal.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-brand-gold group"
-            >
+            <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-brand-gold">
               <div className="text-4xl mb-3">💰</div>
-              <h3 className="font-bold text-xl mb-2 text-brand-navy group-hover:text-brand-gold transition">Expense Tracker</h3>
+              <h3 className="font-bold text-xl mb-2 text-brand-navy">Expense Tracker</h3>
               <p className="text-gray-600 text-sm mb-4">
                 Full-featured expense tracking with receipt OCR, mileage tracking, recurring expenses, and tax reports.
               </p>
@@ -214,20 +209,28 @@ function DashboardContent() {
                 <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Mileage GPS</span>
                 <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Tax Reports</span>
               </div>
-              <span className="text-brand-gold font-semibold text-sm flex items-center gap-1">
-                Launch App →
-              </span>
-            </a>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => router.push('/admin/expense-tracker')}
+                  className="w-full py-2 bg-brand-gold text-brand-dark font-semibold rounded hover:bg-yellow-500 transition text-sm"
+                >
+                  Integrated Version
+                </button>
+                <a
+                  href="https://expenses-made-easy-opal.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2 bg-gray-100 text-gray-700 font-semibold rounded hover:bg-gray-200 transition text-sm text-center"
+                >
+                  Standalone App →
+                </a>
+              </div>
+            </div>
 
             {/* Area Bid Helper */}
-            <a
-              href="https://area-bid-help.vercel.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-brand-gold group"
-            >
+            <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-brand-gold">
               <div className="text-4xl mb-3">🗺️</div>
-              <h3 className="font-bold text-xl mb-2 text-brand-navy group-hover:text-brand-gold transition">Area Bid Helper</h3>
+              <h3 className="font-bold text-xl mb-2 text-brand-navy">Area Bid Helper</h3>
               <p className="text-gray-600 text-sm mb-4">
                 Calculate parking lot areas using satellite imagery, generate accurate bids, and manage project estimates.
               </p>
@@ -236,10 +239,23 @@ function DashboardContent() {
                 <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Area Calc</span>
                 <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Bid Generator</span>
               </div>
-              <span className="text-brand-gold font-semibold text-sm flex items-center gap-1">
-                Launch App →
-              </span>
-            </a>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => router.push('/admin/area-helper')}
+                  className="w-full py-2 bg-brand-gold text-brand-dark font-semibold rounded hover:bg-yellow-500 transition text-sm"
+                >
+                  Integrated Version
+                </button>
+                <a
+                  href="https://area-bid-help.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2 bg-gray-100 text-gray-700 font-semibold rounded hover:bg-gray-200 transition text-sm text-center"
+                >
+                  Standalone App →
+                </a>
+              </div>
+            </div>
 
             {/* Calculator - Internal */}
             <div
