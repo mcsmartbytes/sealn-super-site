@@ -185,6 +185,101 @@ function DashboardContent() {
           </div>
         </div>
 
+        {/* Business Tools Showcase */}
+        <div className="bg-gradient-to-r from-brand-navy to-brand-dark rounded-lg shadow-lg p-6 mb-8">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-brand-gold rounded-lg flex items-center justify-center">
+              <span className="text-2xl">🛠️</span>
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white">Business Tools</h2>
+              <p className="text-gray-300 text-sm">Professional applications we&apos;ve built</p>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Expense Tracker */}
+            <a
+              href="https://expenses-made-easy-opal.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-brand-gold group"
+            >
+              <div className="text-4xl mb-3">💰</div>
+              <h3 className="font-bold text-xl mb-2 text-brand-navy group-hover:text-brand-gold transition">Expense Tracker</h3>
+              <p className="text-gray-600 text-sm mb-4">
+                Full-featured expense tracking with receipt OCR, mileage tracking, recurring expenses, and tax reports.
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Receipt OCR</span>
+                <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Mileage GPS</span>
+                <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Tax Reports</span>
+              </div>
+              <span className="text-brand-gold font-semibold text-sm flex items-center gap-1">
+                Launch App →
+              </span>
+            </a>
+
+            {/* Area Bid Helper */}
+            <a
+              href="https://area-bid-help.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-brand-gold group"
+            >
+              <div className="text-4xl mb-3">🗺️</div>
+              <h3 className="font-bold text-xl mb-2 text-brand-navy group-hover:text-brand-gold transition">Area Bid Helper</h3>
+              <p className="text-gray-600 text-sm mb-4">
+                Calculate parking lot areas using satellite imagery, generate accurate bids, and manage project estimates.
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Satellite Maps</span>
+                <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Area Calc</span>
+                <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Bid Generator</span>
+              </div>
+              <span className="text-brand-gold font-semibold text-sm flex items-center gap-1">
+                Launch App →
+              </span>
+            </a>
+
+            {/* Calculator - Internal */}
+            <div
+              onClick={() => router.push('/admin/calculator')}
+              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-purple-500 group cursor-pointer"
+            >
+              <div className="text-4xl mb-3">🧮</div>
+              <h3 className="font-bold text-xl mb-2 text-brand-navy group-hover:text-purple-600 transition">Project Calculator</h3>
+              <p className="text-gray-600 text-sm mb-4">
+                Calculate material costs, labor estimates, and project totals with our built-in calculator tool.
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Materials</span>
+                <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded">Labor</span>
+                <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded">Totals</span>
+              </div>
+              <span className="text-purple-600 font-semibold text-sm flex items-center gap-1">
+                Open Tool →
+              </span>
+            </div>
+
+            {/* More Coming Soon */}
+            <div className="bg-gray-800 p-6 rounded-lg shadow-lg border-t-4 border-gray-600">
+              <div className="text-4xl mb-3 opacity-50">🚀</div>
+              <h3 className="font-bold text-xl mb-2 text-gray-400">More Coming Soon</h3>
+              <p className="text-gray-500 text-sm mb-4">
+                We&apos;re constantly building new tools to help streamline your business operations.
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="px-2 py-1 bg-gray-700 text-gray-400 text-xs rounded">Invoicing</span>
+                <span className="px-2 py-1 bg-gray-700 text-gray-400 text-xs rounded">Scheduling</span>
+                <span className="px-2 py-1 bg-gray-700 text-gray-400 text-xs rounded">CRM</span>
+              </div>
+              <span className="text-gray-500 font-semibold text-sm">
+                Stay Tuned
+              </span>
+            </div>
+          </div>
+        </div>
+
         {/* Three Column Layout */}
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Recent Customers */}
