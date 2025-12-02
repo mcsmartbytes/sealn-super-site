@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function EstimateTable({ estimates, loading, onDelete }: any) {
+  const router = useRouter();
   const [sendingEmail, setSendingEmail] = useState<number | null>(null);
 
   async function handleSendEmail(estimate: any) {
@@ -88,17 +90,23 @@ export default function EstimateTable({ estimates, loading, onDelete }: any) {
               </td>
               <td className="p-3 space-x-2">
                 <button
+                  onClick={() => router.push(`/admin/estimates/${e.id}`)}
+                  className="bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
+                >
+                  ✏️ Edit
+                </button>
+                <button
                   onClick={() => handleSendEmail(e)}
                   disabled={sendingEmail === e.id}
                   className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:bg-gray-400"
                 >
-                  {sendingEmail === e.id ? '📧 Sending...' : '📧 Send Email'}
+                  {sendingEmail === e.id ? '📧 Sending...' : '📧 Send'}
                 </button>
                 <button
                   onClick={() => onDelete(e.id)}
                   className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                 >
-                  Delete
+                  🗑️
                 </button>
               </td>
             </tr>
