@@ -51,8 +51,10 @@ export default function EstimateForm({ onAdd }: any) {
         else setServices(data || []);
       });
 
-    // Load calculator items from sessionStorage if coming from calculator
+    // Load calculator items from sessionStorage if coming from calculator or Area Bid Pro
     const calcItems = sessionStorage.getItem("calculatorItems");
+    const areaBidData = sessionStorage.getItem("areaBidProData");
+
     if (calcItems) {
       try {
         const items = JSON.parse(calcItems);
@@ -67,6 +69,22 @@ export default function EstimateForm({ onAdd }: any) {
         sessionStorage.removeItem("calculatorItems"); // Clear after loading
       } catch (error) {
         console.error("Error loading calculator items:", error);
+      }
+    }
+
+    // If coming from Area Bid Pro, also load the notes into description
+    if (areaBidData) {
+      try {
+        const abpData = JSON.parse(areaBidData);
+        if (abpData.notes) {
+          setForm(prev => ({
+            ...prev,
+            description: `Area Bid Pro Measurement:\nTotal Area: ${abpData.totalArea?.toFixed(0) || 0} sq ft\nPerimeter: ${abpData.totalPerimeter?.toFixed(0) || 0} ft\n${abpData.shapes?.length > 1 ? `Shapes: ${abpData.shapes.length}\n` : ''}${abpData.notes ? `Notes: ${abpData.notes}` : ''}`
+          }));
+        }
+        sessionStorage.removeItem("areaBidProData"); // Clear after loading
+      } catch (error) {
+        console.error("Error loading Area Bid Pro data:", error);
       }
     }
   }, []);
