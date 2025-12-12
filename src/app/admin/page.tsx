@@ -14,8 +14,11 @@ export default function AdminPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <p className="text-gray-600">Redirecting to dashboard...</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-brand-navy border-t-brand-gold rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-brand-navy font-medium">Redirecting to dashboard...</p>
+        </div>
       </div>
     </ProtectedRoute>
   );

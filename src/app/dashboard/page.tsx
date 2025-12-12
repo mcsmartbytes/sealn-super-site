@@ -70,114 +70,127 @@ function DashboardContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
         <AdminNav />
         <div className="flex items-center justify-center h-96">
-          <div className="text-xl text-gray-600">Loading dashboard...</div>
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-brand-navy border-t-brand-gold rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="text-xl text-brand-navy font-medium">Loading dashboard...</div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       <AdminNav />
 
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Welcome, {user?.email}</p>
+        <div className="mb-8 bg-gradient-to-r from-brand-navy to-brand-dark rounded-xl p-6 shadow-lg">
+          <h1 className="text-3xl font-bold text-white mb-2">Admin Dashboard</h1>
+          <p className="text-gray-300">Welcome, {user?.email}</p>
         </div>
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-brand-navy hover:shadow-lg transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Customers</p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">{stats.totalCustomers}</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Customers</p>
+                <p className="text-3xl font-bold text-brand-navy mt-2">{stats.totalCustomers}</p>
               </div>
-              <div className="text-4xl">👥</div>
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl">👥</span>
+              </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-brand-gold hover:shadow-lg transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Estimates</p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">{stats.totalEstimates}</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Estimates</p>
+                <p className="text-3xl font-bold text-brand-navy mt-2">{stats.totalEstimates}</p>
               </div>
-              <div className="text-4xl">📄</div>
+              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl">📄</span>
+              </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-indigo-500 hover:shadow-lg transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Invoices</p>
-                <p className="text-3xl font-bold text-gray-800 mt-2">{stats.totalInvoices}</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Invoices</p>
+                <p className="text-3xl font-bold text-brand-navy mt-2">{stats.totalInvoices}</p>
               </div>
-              <div className="text-4xl">📋</div>
+              <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl">📋</span>
+              </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500 hover:shadow-lg transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Pending</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Pending</p>
                 <p className="text-3xl font-bold text-orange-600 mt-2">{stats.pendingInvoices}</p>
               </div>
-              <div className="text-4xl">⏳</div>
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl">⏳</span>
+              </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500 hover:shadow-lg transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Paid</p>
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Paid</p>
                 <p className="text-3xl font-bold text-green-600 mt-2">{stats.paidInvoices}</p>
               </div>
-              <div className="text-4xl">✅</div>
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <span className="text-2xl">✅</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+          <h2 className="text-xl font-bold text-brand-navy mb-4">Quick Actions</h2>
           <div className="grid md:grid-cols-5 gap-4">
             <button
               onClick={() => router.push('/admin/customers')}
-              className="p-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold flex items-center justify-center gap-2"
+              className="p-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 font-semibold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition"
             >
               <span>👤</span>
               <span>Add Customer</span>
             </button>
             <button
               onClick={() => router.push('/admin/estimates')}
-              className="p-4 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold flex items-center justify-center gap-2"
+              className="p-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 font-semibold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition"
             >
               <span>📄</span>
               <span>New Estimate</span>
             </button>
             <button
-              onClick={() => router.push('/admin/expenses')}
-              className="p-4 bg-orange-600 text-white rounded-lg hover:bg-orange-700 font-semibold flex items-center justify-center gap-2"
+              onClick={() => router.push('/admin/expense-tracker')}
+              className="p-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 font-semibold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition"
             >
               <span>💰</span>
               <span>Expenses</span>
             </button>
             <button
               onClick={() => router.push('/admin/calculator')}
-              className="p-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-semibold flex items-center justify-center gap-2"
+              className="p-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 font-semibold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition"
             >
               <span>🧮</span>
               <span>Calculator</span>
             </button>
             <button
               onClick={() => router.push('/admin/area-helper')}
-              className="p-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold flex items-center justify-center gap-2"
+              className="p-4 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl hover:from-indigo-700 hover:to-indigo-800 font-semibold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition"
             >
               <span>🗺️</span>
               <span>Area Helper</span>
@@ -186,9 +199,9 @@ function DashboardContent() {
         </div>
 
         {/* Business Tools Showcase */}
-        <div className="bg-gradient-to-r from-brand-navy to-brand-dark rounded-lg shadow-lg p-6 mb-8">
+        <div className="bg-gradient-to-r from-brand-navy to-brand-dark rounded-xl shadow-lg p-6 mb-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-brand-gold rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-brand-gold rounded-xl flex items-center justify-center shadow-md">
               <span className="text-2xl">🛠️</span>
             </div>
             <div>
@@ -299,12 +312,12 @@ function DashboardContent() {
         {/* Three Column Layout */}
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Recent Customers */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-t-4 border-brand-navy">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-gray-800">Recent Customers</h2>
+              <h2 className="text-lg font-bold text-brand-navy">Recent Customers</h2>
               <button
                 onClick={() => router.push('/admin/customers')}
-                className="text-blue-600 hover:underline text-sm"
+                className="text-brand-navy hover:text-blue-800 text-sm font-medium"
               >
                 View All →
               </button>
@@ -331,12 +344,12 @@ function DashboardContent() {
           </div>
 
           {/* Recent Estimates */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-t-4 border-brand-gold">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-gray-800">Recent Estimates</h2>
+              <h2 className="text-lg font-bold text-brand-navy">Recent Estimates</h2>
               <button
                 onClick={() => router.push('/admin/estimates')}
-                className="text-blue-600 hover:underline text-sm"
+                className="text-brand-navy hover:text-blue-800 text-sm font-medium"
               >
                 View All →
               </button>
@@ -361,12 +374,12 @@ function DashboardContent() {
           </div>
 
           {/* Recent Invoices */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-xl shadow-md p-6 border-t-4 border-green-500">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-gray-800">Recent Invoices</h2>
+              <h2 className="text-lg font-bold text-brand-navy">Recent Invoices</h2>
               <button
                 onClick={() => router.push('/admin/invoices')}
-                className="text-blue-600 hover:underline text-sm"
+                className="text-brand-navy hover:text-blue-800 text-sm font-medium"
               >
                 View All →
               </button>

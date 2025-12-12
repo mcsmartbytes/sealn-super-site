@@ -56,18 +56,6 @@ export default function CalculatorPage() {
 
     fetchServices();
 
-    // Set Mapbox token for area helper
-    if (typeof window !== 'undefined') {
-      (window as any).MAPBOX_TOKEN = 'pk.eyJ1Ijoic2VhbG5zdHJpcGVuc3BlY2lhbGlzdCIsImEiOiJjbWZtaXE4aW4wMmE5MmpvaWEzMms2MXg3In0.2Py8b4hLtIqzLHVGAo9sYg';
-
-      // Load the script dynamically if not already loaded
-      if (!document.querySelector('script[src="/area-bid-helper.js"]')) {
-        const script = document.createElement('script');
-        script.src = '/area-bid-helper.js';
-        script.async = true;
-        document.body.appendChild(script);
-      }
-    }
   }, []);
 
   useEffect(() => {
@@ -406,7 +394,7 @@ export default function CalculatorPage() {
                 <div className="mt-6">
                   <button
                     onClick={() => setShowMapHelper(!showMapHelper)}
-                    className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold flex items-center justify-between"
+                    className="w-full px-4 py-3 bg-brand-navy text-white rounded-lg hover:bg-blue-800 font-semibold flex items-center justify-between"
                   >
                     <span>🗺️ {showMapHelper ? 'Hide' : 'Show'} Map Area Helper</span>
                     <span>{showMapHelper ? '▲' : '▼'}</span>
@@ -414,36 +402,26 @@ export default function CalculatorPage() {
 
                   {showMapHelper && (
                     <div className="mt-4 space-y-3">
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <p className="text-sm text-blue-800 mb-3">
-                          <strong>Instructions:</strong> Use the map below to measure the area, then click "Use Total Area" to add it to your calculator.
-                        </p>
-                        <button
-                          onClick={() => {
-                            // Get measurement from the map component using getData() method
-                            const mapEl = document.querySelector('area-bid-helper') as any;
-                            if (mapEl && mapEl.getData) {
-                              const data = mapEl.getData();
-                              if (data && data.area_sq_ft && data.area_sq_ft > 0) {
-                                const sqFt = data.area_sq_ft;
-                                const lastItem = calcItems[calcItems.length - 1];
-                                updateQuantity(lastItem.id, parseFloat(sqFt.toFixed(1)));
-                                alert(`Area of ${sqFt.toFixed(1)} sq ft added to calculator!`);
-                              } else {
-                                alert('Please draw some shapes on the map first.');
-                              }
-                            } else {
-                              alert('Map component not ready. Please try again.');
-                            }
-                          }}
-                          className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold"
-                        >
-                          📐 Use Total Area in Calculator
-                        </button>
+                      <div className="bg-gradient-to-r from-brand-navy to-brand-dark rounded-lg p-4 text-white">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 bg-brand-gold rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span className="text-xl">🗺️</span>
+                          </div>
+                          <div>
+                            <p className="font-semibold">Area Bid Helper</p>
+                            <p className="text-sm text-gray-300 mt-1">
+                              Use satellite imagery to measure parking lot areas. Draw shapes on the map, then manually enter the calculated area above.
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="border-4 border-blue-500 rounded-lg overflow-hidden" style={{ height: '600px' }}>
-                        {/* @ts-ignore - Web component */}
-                        <area-bid-helper style={{ display: 'block', width: '100%', height: '100%' }} />
+                      <div className="border-4 border-brand-navy rounded-lg overflow-hidden" style={{ height: '600px' }}>
+                        <iframe
+                          src="https://area-bid-helper.vercel.app"
+                          className="w-full h-full border-0"
+                          title="Area Bid Helper"
+                          allow="geolocation"
+                        />
                       </div>
                     </div>
                   )}
