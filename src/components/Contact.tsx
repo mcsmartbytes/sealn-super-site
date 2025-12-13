@@ -1,6 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+// Simple rate limiter - max 3 submissions per 10 minutes
+const RATE_LIMIT_KEY = 'contact_form_submissions';
+const RATE_LIMIT_MAX = 3;
+const RATE_LIMIT_WINDOW = 10 * 60 * 1000; // 10 minutes
+
+function checkRateLimit(): boolean {
+  if (typeof window === 'undefined') return true;
+
+  const stored = localStorage.getItem(RATE_LIMIT_KEY);
+  const submissions: number[] = stored ? JSON.parse(stored) : [];
+  const now = Date.now();
+
+  // Filter out old submissions
+  const recent = submissions.filter((time: number) => now - time < RATE_LIMIT_WINDOW);
+
+  return recent.length < RATE_LIMIT_MAX;
+}
+
+function recordSubmission(): void {
+  if (typeof window === 'undefined') return;
+
+  const stored = localStorage.getItem(RATE_LIMIT_KEY);
+  const submissions: number[] = stored ? JSON.parse(stored) : [];
+  const now = Date.now();
+
+  // Filter out old submissions and add new one
+  const recent = submissions.filter((time: number) => now - time < RATE_LIMIT_WINDOW);
+  recent.push(now);
+
+  localStorage.setItem(RATE_LIMIT_KEY, JSON.stringify(recent));
+}
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -11,9 +43,22 @@ export default function Contact() {
     message: ''
   });
   const [status, setStatus] = useState('');
+  const [isRateLimited, setIsRateLimited] = useState(false);
+
+  useEffect(() => {
+    setIsRateLimited(!checkRateLimit());
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check rate limit
+    if (!checkRateLimit()) {
+      setIsRateLimited(true);
+      setStatus('Too many submissions. Please try again in a few minutes.');
+      return;
+    }
+
     setStatus('Sending...');
 
     try {
@@ -23,6 +68,9 @@ export default function Contact() {
         .insert([formData]);
 
       if (error) throw error;
+
+      // Record successful submission for rate limiting
+      recordSubmission();
 
       setStatus('Thank you! We will contact you soon.');
       setFormData({ name: '', email: '', phone: '', service: '', message: '' });
@@ -141,9 +189,10 @@ export default function Contact() {
 
             <button
               type="submit"
-              className="w-full py-4 bg-brand-gold text-brand-dark font-bold text-lg rounded-lg hover:bg-yellow-500 transition shadow-lg"
+              disabled={isRateLimited}
+              className="w-full py-4 bg-brand-gold text-brand-dark font-bold text-lg rounded-lg hover:bg-yellow-500 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Send Message
+              {isRateLimited ? 'Please wait before submitting again' : 'Send Message'}
             </button>
           </form>
         </div>

@@ -4,6 +4,16 @@ import { supabase } from '@/utils/supabase';
 
 export async function POST(request: NextRequest) {
   try {
+    // Verify authentication
+    const authHeader = request.headers.get('authorization');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(
+      authHeader?.replace('Bearer ', '')
+    );
+
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     // Lazy initialize Resend to avoid build-time errors
     if (!process.env.RESEND_API_KEY) {
       return NextResponse.json({
