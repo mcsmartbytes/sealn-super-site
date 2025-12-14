@@ -1,11 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import Script from 'next/script';
 
 // Simple rate limiter - max 3 submissions per 10 minutes
 const RATE_LIMIT_KEY = 'contact_form_submissions';
 const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW = 10 * 60 * 1000; // 10 minutes
+
+// Turnstile Site Key
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAACGjfceh5mP_FyYu';
 
 function checkRateLimit(): boolean {
   if (typeof window === 'undefined') return true;
@@ -44,10 +48,42 @@ export default function Contact() {
   });
   const [status, setStatus] = useState('');
   const [isRateLimited, setIsRateLimited] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const turnstileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsRateLimited(!checkRateLimit());
   }, []);
+
+  // Initialize Turnstile widget after script loads
+  const initTurnstile = () => {
+    if (typeof window !== 'undefined' && (window as any).turnstile && turnstileRef.current) {
+      // Clear any existing widget
+      turnstileRef.current.innerHTML = '';
+
+      (window as any).turnstile.render(turnstileRef.current, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: (token: string) => {
+          setTurnstileToken(token);
+        },
+        'expired-callback': () => {
+          setTurnstileToken(null);
+        },
+        'error-callback': () => {
+          setTurnstileToken(null);
+        },
+        theme: 'light',
+      });
+    }
+  };
+
+  const resetTurnstile = () => {
+    if (typeof window !== 'undefined' && (window as any).turnstile && turnstileRef.current) {
+      (window as any).turnstile.reset(turnstileRef.current);
+      setTurnstileToken(null);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,9 +95,34 @@ export default function Contact() {
       return;
     }
 
-    setStatus('Sending...');
+    // Check CAPTCHA
+    if (!turnstileToken) {
+      setStatus('Please complete the CAPTCHA verification.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setStatus('Verifying...');
 
     try {
+      // Verify CAPTCHA server-side
+      const captchaResponse = await fetch('/api/verify-captcha', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: turnstileToken }),
+      });
+
+      const captchaResult = await captchaResponse.json();
+
+      if (!captchaResult.success) {
+        setStatus('CAPTCHA verification failed. Please try again.');
+        resetTurnstile();
+        setIsSubmitting(false);
+        return;
+      }
+
+      setStatus('Sending...');
+
       const { supabase } = await import('../utils/supabase');
       const { error } = await supabase
         .from('contact_request')
@@ -74,14 +135,25 @@ export default function Contact() {
 
       setStatus('Thank you! We will contact you soon.');
       setFormData({ name: '', email: '', phone: '', service: '', message: '' });
+      resetTurnstile();
     } catch (error) {
       console.error('Error submitting form:', error);
       setStatus('Error sending message. Please try again.');
+      resetTurnstile();
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <section id="contact" className="py-16 bg-gray-50">
+      {/* Load Turnstile Script */}
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        onLoad={initTurnstile}
+        strategy="lazyOnload"
+      />
+
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-4 text-brand-navy">Contact Us</h2>
         <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
@@ -181,18 +253,30 @@ export default function Contact() {
               />
             </div>
 
+            {/* Cloudflare Turnstile CAPTCHA */}
+            <div className="flex justify-center">
+              <div ref={turnstileRef} className="cf-turnstile"></div>
+            </div>
+
             {status && (
-              <div className={`p-4 rounded-lg ${status.includes('Thank') ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
+              <div className={`p-4 rounded-lg ${
+                status.includes('Thank') ? 'bg-green-100 text-green-700' :
+                status.includes('Error') || status.includes('failed') ? 'bg-red-100 text-red-700' :
+                'bg-blue-100 text-blue-700'
+              }`}>
                 {status}
               </div>
             )}
 
             <button
               type="submit"
-              disabled={isRateLimited}
+              disabled={isRateLimited || isSubmitting || !turnstileToken}
               className="w-full py-4 bg-brand-gold text-brand-dark font-bold text-lg rounded-lg hover:bg-yellow-500 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isRateLimited ? 'Please wait before submitting again' : 'Send Message'}
+              {isSubmitting ? 'Sending...' :
+               isRateLimited ? 'Please wait before submitting again' :
+               !turnstileToken ? 'Complete verification above' :
+               'Send Message'}
             </button>
           </form>
         </div>
