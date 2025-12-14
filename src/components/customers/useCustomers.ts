@@ -25,13 +25,18 @@ export function useCustomers() {
   }
 
   async function addCustomer(customer: any) {
-    const { data, error } = await supabase.from("customers").insert([customer]);
+    const { data, error } = await supabase
+      .from("customers")
+      .insert([customer])
+      .select()
+      .single();
+
     if (error) {
       console.error("Insert error:", error);
     } else {
       fetchCustomers();
     }
-    return { data, error };
+    return data; // Returns the created customer with ID
   }
 
   async function deleteCustomer(id: string) {

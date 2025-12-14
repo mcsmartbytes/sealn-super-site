@@ -15,7 +15,7 @@ export function useInvoices() {
     setLoading(true);
     const { data, error } = await supabase
       .from("invoices")
-      .select("*, customers(name)")
+      .select("*, customers(name, email), jobs(job_name)")
       .order("created_at", { ascending: false });
 
     if (error) console.error("Error loading invoices:", error);

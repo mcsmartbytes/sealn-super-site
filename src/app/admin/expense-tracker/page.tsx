@@ -95,7 +95,7 @@ function ExpenseTrackerContent() {
         {/* Iframe Container */}
         <div className={`bg-white rounded-lg shadow-lg overflow-hidden ${isFullscreen ? 'h-[calc(100vh-56px)]' : 'h-[800px]'}`}>
           <iframe
-            src="https://expenses-made-easy-opal.vercel.app/expense-dashboard"
+            src="https://expenses-made-easy-opal.vercel.app/expenses"
             className="w-full h-full border-0"
             title="Expense Tracker"
             allow="geolocation; camera; microphone"
