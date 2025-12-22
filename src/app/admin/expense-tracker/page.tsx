@@ -95,7 +95,7 @@ function ExpenseTrackerContent() {
         {/* Iframe Container */}
         <div className={`bg-white rounded-lg shadow-lg overflow-hidden ${isFullscreen ? 'h-[calc(100vh-56px)]' : 'h-[800px]'}`}>
           <iframe
-            src="https://expenses-made-easy-opal.vercel.app/expenses"
+            src="https://expenses-made-easy-opal.vercel.app/expenses/dashboard"
             className="w-full h-full border-0"
             title="Expense Tracker"
             allow="geolocation; camera; microphone"
@@ -104,28 +104,61 @@ function ExpenseTrackerContent() {
 
         {/* Features Grid - Only show when not fullscreen */}
         {!isFullscreen && (
-          <div className="mt-8 grid md:grid-cols-4 gap-4">
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-2xl mb-2">🧾</div>
-              <h3 className="font-bold text-gray-800">Receipt OCR</h3>
-              <p className="text-sm text-gray-600">Scan receipts with AI to auto-fill expense details</p>
+          <>
+            {/* New Features Banner */}
+            <div className="mt-8 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl p-5 text-white">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-2xl">✨</span>
+                <h3 className="text-lg font-bold">New Features Just Added!</h3>
+              </div>
+              <div className="grid md:grid-cols-4 gap-4">
+                <div className="bg-white/10 rounded-lg p-3">
+                  <div className="text-xl mb-1">🧠</div>
+                  <h4 className="font-semibold text-sm">Money Memory</h4>
+                  <p className="text-xs text-purple-200">Remember past prices and find savings</p>
+                </div>
+                <div className="bg-white/10 rounded-lg p-3">
+                  <div className="text-xl mb-1">🏆</div>
+                  <h4 className="font-semibold text-sm">Gamification</h4>
+                  <p className="text-xs text-purple-200">XP, levels, achievements & streaks</p>
+                </div>
+                <div className="bg-white/10 rounded-lg p-3">
+                  <div className="text-xl mb-1">💡</div>
+                  <h4 className="font-semibold text-sm">Smart Insights</h4>
+                  <p className="text-xs text-purple-200">Actionable spending alerts</p>
+                </div>
+                <div className="bg-white/10 rounded-lg p-3">
+                  <div className="text-xl mb-1">💰</div>
+                  <h4 className="font-semibold text-sm">Mileage → Tax</h4>
+                  <p className="text-xs text-purple-200">See tax deductions per trip</p>
+                </div>
+              </div>
             </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-2xl mb-2">🚗</div>
-              <h3 className="font-bold text-gray-800">Mileage Tracking</h3>
-              <p className="text-sm text-gray-600">GPS-based auto-tracking for business trips</p>
+
+            {/* Core Features Grid */}
+            <div className="mt-6 grid md:grid-cols-4 gap-4">
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="text-2xl mb-2">🧾</div>
+                <h3 className="font-bold text-gray-800">Receipt OCR</h3>
+                <p className="text-sm text-gray-600">Scan receipts with AI to auto-fill expense details</p>
+              </div>
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="text-2xl mb-2">🚗</div>
+                <h3 className="font-bold text-gray-800">Mileage Tracking</h3>
+                <p className="text-sm text-gray-600">GPS-based auto-tracking for business trips</p>
+              </div>
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="text-2xl mb-2">🔄</div>
+                <h3 className="font-bold text-gray-800">Recurring Expenses</h3>
+                <p className="text-sm text-gray-600">Auto-generate monthly subscriptions and bills</p>
+              </div>
+              <div className="bg-white rounded-lg shadow p-4">
+                <div className="text-2xl mb-2">📊</div>
+                <h3 className="font-bold text-gray-800">Tax Reports</h3>
+                <p className="text-sm text-gray-600">Schedule C breakdown for tax season</p>
+              </div>
             </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-2xl mb-2">🔄</div>
-              <h3 className="font-bold text-gray-800">Recurring Expenses</h3>
-              <p className="text-sm text-gray-600">Auto-generate monthly subscriptions and bills</p>
-            </div>
-            <div className="bg-white rounded-lg shadow p-4">
-              <div className="text-2xl mb-2">📊</div>
-              <h3 className="font-bold text-gray-800">Tax Reports</h3>
-              <p className="text-sm text-gray-600">Schedule C breakdown for tax season</p>
-            </div>
-          </div>
+          </>
         )}
       </div>
     </div>
