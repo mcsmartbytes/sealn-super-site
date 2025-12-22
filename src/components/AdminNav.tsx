@@ -41,6 +41,9 @@ export default function AdminNav() {
           <Link href="/admin/sitesense" className="hover:text-brand-gold transition">
             SiteSense
           </Link>
+          <Link href="/admin/books" className="hover:text-brand-gold transition">
+            Books
+          </Link>
           <Link href="/admin/services" className="hover:text-brand-gold transition">
             Services
           </Link>
