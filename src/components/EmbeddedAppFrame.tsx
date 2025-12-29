@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/utils/supabase';
 
 interface EmbeddedAppFrameProps {
@@ -27,6 +27,18 @@ interface FeatureItem {
   description: string;
 }
 
+// Allowed origins for postMessage auth - add your app domains here
+const ALLOWED_ORIGINS = [
+  'https://sitesense-lilac.vercel.app',
+  'https://crm-made-easy.vercel.app',
+  'https://expenses-made-easy-opal.vercel.app',
+  'https://books-made-easy-app.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  'http://localhost:3003',
+];
+
 export default function EmbeddedAppFrame({
   appUrl,
   appName,
@@ -43,71 +55,92 @@ export default function EmbeddedAppFrame({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [embeddedUrl, setEmbeddedUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [authStatus, setAuthStatus] = useState<'pending' | 'sent' | 'confirmed'>('pending');
   const [error, setError] = useState<string | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const tokenSentRef = useRef(false);
 
+  // Build embedded URL without token (token sent via postMessage)
   useEffect(() => {
-    buildEmbeddedUrl();
+    const url = new URL(appUrl);
+    url.searchParams.set('embedded', 'true');
+    setEmbeddedUrl(url.toString());
+    setIsLoading(false);
   }, [appUrl]);
 
-  const buildEmbeddedUrl = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  // Send auth token to iframe via postMessage
+  const sendAuthToken = useCallback(async (targetOrigin: string) => {
+    if (tokenSentRef.current) return;
 
-      // Get the current session to extract the access token
+    try {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-      if (sessionError) {
-        console.error('Session error:', sessionError);
-        setError('Failed to get authentication session');
-        setIsLoading(false);
-        return;
-      }
-
-      if (!session?.access_token) {
+      if (sessionError || !session?.access_token) {
+        console.error('Failed to get session for postMessage auth');
         setError('No active session');
-        setIsLoading(false);
         return;
       }
 
-      // TODO: SECURITY HARDENING (post-demo)
-      // Current: Token passed via URL query parameter
-      // Risk: Tokens in URLs can leak via logs, referrers, or browser history
-      // Solution: Replace with postMessage API:
-      //   1. Load iframe without token
-      //   2. iframe sends "ready" message to parent
-      //   3. Parent sends token via postMessage (no URL exposure)
-      //   4. iframe validates and creates session
-      // Ticket: Create issue "Replace URL token with postMessage auth handshake"
-
-      // Build the embedded URL with the parent token
-      const url = new URL(appUrl);
-      url.searchParams.set('embedded', 'true');
-      url.searchParams.set('parent_token', session.access_token);
-
-      setEmbeddedUrl(url.toString());
-      setIsLoading(false);
+      if (iframeRef.current?.contentWindow) {
+        iframeRef.current.contentWindow.postMessage(
+          { type: 'AUTH_TOKEN', token: session.access_token },
+          targetOrigin
+        );
+        tokenSentRef.current = true;
+        setAuthStatus('sent');
+      }
     } catch (err) {
-      console.error('Error building embedded URL:', err);
-      setError('Failed to initialize embedded app');
-      setIsLoading(false);
+      console.error('Error sending auth token:', err);
+      setError('Failed to authenticate embedded app');
     }
-  };
+  }, []);
 
-  // Refresh the token periodically to handle expiration
+  // Listen for messages from embedded apps
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Validate origin
+      const origin = event.origin;
+      if (!ALLOWED_ORIGINS.includes(origin)) {
+        // Also allow same origin or if the appUrl matches
+        const appOrigin = new URL(appUrl).origin;
+        if (origin !== appOrigin && origin !== window.location.origin) {
+          console.warn('Blocked postMessage from unauthorized origin:', origin);
+          return;
+        }
+      }
+
+      // Handle ready message from embedded app
+      if (event.data?.type === 'EMBEDDED_APP_READY') {
+        sendAuthToken(origin);
+      }
+
+      // Handle auth confirmation
+      if (event.data?.type === 'AUTH_CONFIRMED') {
+        setAuthStatus('confirmed');
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [appUrl, sendAuthToken]);
+
+  // Refresh token and send to iframe periodically
   useEffect(() => {
     const refreshInterval = setInterval(async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.access_token && embeddedUrl) {
-        const url = new URL(appUrl);
-        url.searchParams.set('embedded', 'true');
-        url.searchParams.set('parent_token', session.access_token);
-        setEmbeddedUrl(url.toString());
+      if (authStatus === 'confirmed' && iframeRef.current?.contentWindow) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          const appOrigin = new URL(appUrl).origin;
+          iframeRef.current.contentWindow.postMessage(
+            { type: 'AUTH_TOKEN_REFRESH', token: session.access_token },
+            appOrigin
+          );
+        }
       }
     }, 10 * 60 * 1000); // Refresh every 10 minutes
 
     return () => clearInterval(refreshInterval);
-  }, [appUrl, embeddedUrl]);
+  }, [appUrl, authStatus]);
 
   if (error) {
     return (
@@ -244,6 +277,7 @@ export default function EmbeddedAppFrame({
           </div>
         ) : embeddedUrl ? (
           <iframe
+            ref={iframeRef}
             src={embeddedUrl}
             className="w-full h-full border-0"
             title={appName}
