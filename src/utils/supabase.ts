@@ -5,7 +5,11 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 // Only create client if env vars are available (won't create during build)
 export const supabase = supabaseUrl && supabaseAnonKey
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      db: {
+        schema: 'sealn'  // Use sealn schema in unified database
+      }
+    })
   : null as any;
 
 // Helper to ensure supabase is available at runtime
