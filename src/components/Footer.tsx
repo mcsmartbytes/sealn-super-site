@@ -24,7 +24,7 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="font-bold text-brand-gold mb-4">Legal</h4>
+            <h4 className="font-bold text-brand-gold mb-4">Quick Links</h4>
             <ul className="text-gray-300 space-y-2">
               <li>
                 <Link href="/privacy" className="hover:text-brand-gold transition">
@@ -36,6 +36,11 @@ export default function Footer() {
                   Terms of Service
                 </Link>
               </li>
+              <li>
+                <Link href="/admin/login" className="hover:text-brand-gold transition">
+                  Admin Portal
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -45,6 +50,8 @@ export default function Footer() {
             <Link href="/privacy" className="hover:text-brand-gold transition">Privacy Policy</Link>
             {' | '}
             <Link href="/terms" className="hover:text-brand-gold transition">Terms of Service</Link>
+            {' | '}
+            <Link href="/admin/login" className="hover:text-brand-gold transition">Admin</Link>
           </p>
         </div>
       </div>

@@ -198,113 +198,117 @@ function DashboardContent() {
           </div>
         </div>
 
-        {/* Business Tools Showcase */}
+        {/* Integrated Business Suite */}
         <div className="bg-gradient-to-r from-brand-navy to-brand-dark rounded-xl shadow-lg p-6 mb-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-brand-gold rounded-xl flex items-center justify-center shadow-md">
-              <span className="text-2xl">🛠️</span>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-brand-gold rounded-xl flex items-center justify-center shadow-md">
+                <span className="text-2xl">🚀</span>
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-white">Integrated Business Suite</h2>
+                <p className="text-gray-300 text-sm">One login, seamless access to all tools</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-white">Business Tools</h2>
-              <p className="text-gray-300 text-sm">Professional applications we&apos;ve built</p>
+            <div className="flex gap-2">
+              <span className="px-3 py-1 bg-emerald-500 text-white text-xs rounded-full font-semibold">INTEGRATED</span>
+              <span className="px-3 py-1 bg-blue-500 text-white text-xs rounded-full font-semibold">STANDALONE</span>
             </div>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Expense Tracker */}
-            <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-brand-gold">
-              <div className="text-4xl mb-3">💰</div>
-              <h3 className="font-bold text-xl mb-2 text-brand-navy">Expense Tracker</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Full-featured expense tracking with receipt OCR, mileage tracking, recurring expenses, and tax reports.
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {/* SiteSense */}
+            <div className="bg-white p-5 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-emerald-500">
+              <div className="text-3xl mb-2">🏗️</div>
+              <h3 className="font-bold text-lg mb-1 text-brand-navy">SiteSense</h3>
+              <p className="text-gray-600 text-xs mb-3">
+                Job management, crews, estimates, time tracking
               </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Receipt OCR</span>
-                <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Mileage GPS</span>
-                <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Tax Reports</span>
+              <div className="flex flex-wrap gap-1 mb-3">
+                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-xs rounded">Jobs</span>
+                <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">Estimates</span>
               </div>
-              <div className="flex flex-col gap-2">
-                <button
-                  onClick={() => router.push('/admin/expense-tracker')}
-                  className="w-full py-2 bg-brand-gold text-brand-dark font-semibold rounded hover:bg-yellow-500 transition text-sm"
-                >
-                  Integrated Version
-                </button>
-                <a
-                  href="https://expenses-made-easy-opal.vercel.app/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-2 bg-gray-100 text-gray-700 font-semibold rounded hover:bg-gray-200 transition text-sm text-center"
-                >
-                  Standalone App →
-                </a>
-              </div>
+              <button
+                onClick={() => router.push('/admin/sitesense')}
+                className="w-full py-2 bg-emerald-500 text-white font-semibold rounded hover:bg-emerald-600 transition text-sm"
+              >
+                Open App
+              </button>
             </div>
 
-            {/* Area Bid Helper */}
-            <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-brand-gold">
-              <div className="text-4xl mb-3">🗺️</div>
-              <h3 className="font-bold text-xl mb-2 text-brand-navy">Area Bid Helper</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Calculate parking lot areas using satellite imagery, generate accurate bids, and manage project estimates.
+            {/* CRM */}
+            <div className="bg-white p-5 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-blue-500">
+              <div className="text-3xl mb-2">👥</div>
+              <h3 className="font-bold text-lg mb-1 text-brand-navy">CRM</h3>
+              <p className="text-gray-600 text-xs mb-3">
+                Contacts, companies, deals, sales pipeline
               </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">Satellite Maps</span>
-                <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">Area Calc</span>
-                <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Bid Generator</span>
+              <div className="flex flex-wrap gap-1 mb-3">
+                <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">Contacts</span>
+                <span className="px-2 py-0.5 bg-purple-100 text-purple-800 text-xs rounded">Pipeline</span>
               </div>
-              <div className="flex flex-col gap-2">
-                <button
-                  onClick={() => router.push('/admin/area-helper')}
-                  className="w-full py-2 bg-brand-gold text-brand-dark font-semibold rounded hover:bg-yellow-500 transition text-sm"
-                >
-                  Integrated Version
-                </button>
-                <a
-                  href="https://area-bid-help.vercel.app/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-2 bg-gray-100 text-gray-700 font-semibold rounded hover:bg-gray-200 transition text-sm text-center"
-                >
-                  Standalone App →
-                </a>
-              </div>
+              <button
+                onClick={() => router.push('/admin/crm')}
+                className="w-full py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition text-sm"
+              >
+                Open App
+              </button>
             </div>
 
-            {/* Calculator - Internal */}
-            <div
-              onClick={() => router.push('/admin/calculator')}
-              className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-purple-500 group cursor-pointer"
-            >
-              <div className="text-4xl mb-3">🧮</div>
-              <h3 className="font-bold text-xl mb-2 text-brand-navy group-hover:text-purple-600 transition">Project Calculator</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Calculate material costs, labor estimates, and project totals with our built-in calculator tool.
+            {/* Expenses */}
+            <div className="bg-white p-5 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-purple-500">
+              <div className="text-3xl mb-2">💰</div>
+              <h3 className="font-bold text-lg mb-1 text-brand-navy">Expenses</h3>
+              <p className="text-gray-600 text-xs mb-3">
+                Receipt OCR, mileage, tax reports
               </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">Materials</span>
-                <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded">Labor</span>
-                <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded">Totals</span>
+              <div className="flex flex-wrap gap-1 mb-3">
+                <span className="px-2 py-0.5 bg-purple-100 text-purple-800 text-xs rounded">OCR</span>
+                <span className="px-2 py-0.5 bg-green-100 text-green-800 text-xs rounded">Mileage</span>
               </div>
-              <span className="text-purple-600 font-semibold text-sm flex items-center gap-1">
-                Open Tool →
-              </span>
+              <button
+                onClick={() => router.push('/admin/expense-tracker')}
+                className="w-full py-2 bg-purple-500 text-white font-semibold rounded hover:bg-purple-600 transition text-sm"
+              >
+                Open App
+              </button>
             </div>
 
-            {/* More Coming Soon */}
-            <div className="bg-gray-800 p-6 rounded-lg shadow-lg border-t-4 border-gray-600">
-              <div className="text-4xl mb-3 opacity-50">🚀</div>
-              <h3 className="font-bold text-xl mb-2 text-gray-400">More Coming Soon</h3>
-              <p className="text-gray-500 text-sm mb-4">
-                We&apos;re constantly building new tools to help streamline your business operations.
+            {/* Books */}
+            <div className="bg-white p-5 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-indigo-500">
+              <div className="text-3xl mb-2">📚</div>
+              <h3 className="font-bold text-lg mb-1 text-brand-navy">Books</h3>
+              <p className="text-gray-600 text-xs mb-3">
+                Invoicing, bills, accounting reports
               </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-2 py-1 bg-gray-700 text-gray-400 text-xs rounded">Invoicing</span>
-                <span className="px-2 py-1 bg-gray-700 text-gray-400 text-xs rounded">Scheduling</span>
-                <span className="px-2 py-1 bg-gray-700 text-gray-400 text-xs rounded">CRM</span>
+              <div className="flex flex-wrap gap-1 mb-3">
+                <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-xs rounded">Invoices</span>
+                <span className="px-2 py-0.5 bg-orange-100 text-orange-800 text-xs rounded">Reports</span>
               </div>
-              <span className="text-gray-500 font-semibold text-sm">
-                Stay Tuned
-              </span>
+              <button
+                onClick={() => router.push('/admin/books')}
+                className="w-full py-2 bg-indigo-500 text-white font-semibold rounded hover:bg-indigo-600 transition text-sm"
+              >
+                Open App
+              </button>
+            </div>
+
+            {/* Area Helper */}
+            <div className="bg-white p-5 rounded-lg shadow-lg hover:shadow-xl transition border-t-4 border-brand-gold">
+              <div className="text-3xl mb-2">🗺️</div>
+              <h3 className="font-bold text-lg mb-1 text-brand-navy">Area Helper</h3>
+              <p className="text-gray-600 text-xs mb-3">
+                Satellite mapping, area calculations
+              </p>
+              <div className="flex flex-wrap gap-1 mb-3">
+                <span className="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs rounded">Maps</span>
+                <span className="px-2 py-0.5 bg-gray-100 text-gray-800 text-xs rounded">Calc</span>
+              </div>
+              <button
+                onClick={() => router.push('/admin/area-helper')}
+                className="w-full py-2 bg-brand-gold text-brand-dark font-semibold rounded hover:bg-yellow-500 transition text-sm"
+              >
+                Open App
+              </button>
             </div>
           </div>
         </div>
