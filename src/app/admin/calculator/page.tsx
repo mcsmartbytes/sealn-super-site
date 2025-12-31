@@ -415,7 +415,7 @@ export default function CalculatorPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="border-4 border-brand-navy rounded-lg overflow-hidden" style={{ height: '600px' }}>
+                      <div className="border-4 border-brand-navy rounded-lg overflow-hidden" style={{ height: 'min(600px, calc(100vh - 300px))', minHeight: '400px' }}>
                         <iframe
                           src="https://area-bid-helper.vercel.app"
                           className="w-full h-full border-0"
