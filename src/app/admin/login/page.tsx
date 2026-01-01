@@ -12,21 +12,41 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  const handleDemoLogin = () => {
+    // Set demo session in localStorage and redirect
+    localStorage.setItem('demoSession', 'true');
+    localStorage.setItem('presentationMode', 'true');
+    router.push('/admin');
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message);
+    // Check if supabase is properly initialized
+    if (!supabase) {
+      setError('Authentication service is temporarily unavailable. Please try again later.');
       setLoading(false);
-    } else {
-      router.push('/admin');
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+      } else {
+        router.push('/admin');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Connection failed. Please check your internet connection and try again.');
+      setLoading(false);
     }
   };
 
@@ -82,6 +102,27 @@ export default function LoginPage() {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+
+        <div className="mt-4">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">or</span>
+            </div>
+          </div>
+
+          <button
+            onClick={handleDemoLogin}
+            className="mt-4 w-full py-3 bg-brand-navy text-white font-bold text-lg rounded-lg hover:bg-blue-800 transition"
+          >
+            Demo Login
+          </button>
+          <p className="text-xs text-gray-500 text-center mt-2">
+            Access demo mode with sample data
+          </p>
+        </div>
 
         <div className="mt-6 text-center">
           <a href="/" className="text-brand-navy hover:text-brand-gold transition">
