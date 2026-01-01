@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
@@ -63,8 +64,15 @@ export default function AdminNav() {
     <nav className="bg-gray-900 text-white px-6 py-4">
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center space-x-6">
-          <Link href="/admin" className="text-xl font-bold text-brand-gold hover:text-yellow-500">
-            Sealn
+          <Link href="/admin" className="flex items-center gap-2 hover:opacity-80 transition">
+            <Image
+              src="/Transparent webpage.webp"
+              alt="Seal'n & Stripe'n Specialist"
+              width={80}
+              height={40}
+              className="h-8 w-auto"
+            />
+            <span className="text-lg font-bold text-brand-gold hidden sm:inline">Sealn</span>
           </Link>
           {links.map((link) => (
             <Link

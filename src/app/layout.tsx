@@ -5,10 +5,15 @@ export const metadata = {
   description: 'Professional Parking Lot Services',
   manifest: '/manifest.json',
   themeColor: '#3b82f6',
+  icons: {
+    icon: '/icononly_transparent.ico',
+    shortcut: '/icononly_transparent.ico',
+    apple: '/icononly_transparent.png',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Area Helper Pro'
+    title: "Seal'n & Stripe'n"
   }
 };
 
