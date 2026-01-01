@@ -6,9 +6,9 @@ export const metadata = {
   manifest: '/manifest.json',
   themeColor: '#3b82f6',
   icons: {
-    icon: '/icononly_transparent.ico',
-    shortcut: '/icononly_transparent.ico',
-    apple: '/icononly_transparent.png',
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
   },
   appleWebApp: {
     capable: true,

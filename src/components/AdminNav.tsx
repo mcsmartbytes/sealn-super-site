@@ -72,7 +72,7 @@ export default function AdminNav() {
               height={40}
               className="h-8 w-auto"
             />
-            <span className="text-lg font-bold text-brand-gold hidden sm:inline">Sealn</span>
+            <span className="text-base font-bold text-brand-gold hidden md:inline">Seal'n & Stripe'n Specialist</span>
           </Link>
           {links.map((link) => (
             <Link
