@@ -16,9 +16,43 @@ export default function Dashboard() {
   );
 }
 
+// Demo data for presentation mode
+const DEMO_STATS = {
+  totalCustomers: 24,
+  totalEstimates: 18,
+  totalInvoices: 32,
+  pendingInvoices: 5,
+  paidInvoices: 27
+};
+
+const DEMO_CUSTOMERS = [
+  { id: '1', name: 'Westfield Property Management', email: 'facilities@westfield.com', created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: '2', name: 'Chicago Dept of Aviation', email: 'contracts@flychicago.com', created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: '3', name: 'Costco Wholesale', email: 'facilities@costco.com', created_at: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: '4', name: 'Target Corporation', email: 'vendorpay@target.com', created_at: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: '5', name: 'Marriott International', email: 'facilities@marriott.com', created_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString() },
+];
+
+const DEMO_ESTIMATES = [
+  { id: 'EST-001', total_amount: 87500, created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: 'EST-002', total_amount: 156000, created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: 'EST-003', total_amount: 68500, created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: 'EST-004', total_amount: 45000, created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: 'EST-005', total_amount: 215000, created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString() },
+];
+
+const DEMO_INVOICES = [
+  { id: 'INV-047', total_amount: 125000, status: 'paid', created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: 'INV-052', total_amount: 43750, status: 'pending', created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: 'INV-051', total_amount: 22500, status: 'pending', created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: 'INV-046', total_amount: 78000, status: 'paid', created_at: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString() },
+  { id: 'INV-045', total_amount: 34250, status: 'paid', created_at: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString() },
+];
+
 function DashboardContent() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
+  const [isDemoMode, setIsDemoMode] = useState(false);
   const [stats, setStats] = useState({
     totalCustomers: 0,
     totalEstimates: 0,
@@ -32,38 +66,62 @@ function DashboardContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchData();
+    // Check for demo mode first
+    const demoSession = localStorage.getItem('demoSession') === 'true';
+    setIsDemoMode(demoSession);
+
+    if (demoSession) {
+      // Use demo data
+      setUser({ email: 'demo@sealn.com' });
+      setStats(DEMO_STATS);
+      setRecentCustomers(DEMO_CUSTOMERS);
+      setRecentEstimates(DEMO_ESTIMATES);
+      setRecentInvoices(DEMO_INVOICES);
+      setLoading(false);
+    } else {
+      fetchData();
+    }
   }, []);
 
   async function fetchData() {
-    // Get user
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError || !user) {
+    // Check if supabase is available
+    if (!supabase) {
       router.push('/admin/login');
       return;
     }
-    setUser(user);
 
-    // Fetch all data in parallel
-    const [customers, estimates, invoices] = await Promise.all([
-      supabase.from('customers').select('*').order('created_at', { ascending: false }),
-      supabase.from('estimates').select('*').order('created_at', { ascending: false }),
-      supabase.from('invoices').select('*').order('created_at', { ascending: false })
-    ]);
+    // Get user
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        router.push('/admin/login');
+        return;
+      }
+      setUser(user);
 
-    // Set stats
-    setStats({
-      totalCustomers: customers.data?.length || 0,
-      totalEstimates: estimates.data?.length || 0,
-      totalInvoices: invoices.data?.length || 0,
-      pendingInvoices: invoices.data?.filter(i => i.status === 'pending').length || 0,
-      paidInvoices: invoices.data?.filter(i => i.status === 'paid').length || 0
-    });
+      // Fetch all data in parallel
+      const [customers, estimates, invoices] = await Promise.all([
+        supabase.from('customers').select('*').order('created_at', { ascending: false }),
+        supabase.from('estimates').select('*').order('created_at', { ascending: false }),
+        supabase.from('invoices').select('*').order('created_at', { ascending: false })
+      ]);
 
-    // Set recent data (last 5)
-    setRecentCustomers(customers.data?.slice(0, 5) || []);
-    setRecentEstimates(estimates.data?.slice(0, 5) || []);
-    setRecentInvoices(invoices.data?.slice(0, 5) || []);
+      // Set stats
+      setStats({
+        totalCustomers: customers.data?.length || 0,
+        totalEstimates: estimates.data?.length || 0,
+        totalInvoices: invoices.data?.length || 0,
+        pendingInvoices: invoices.data?.filter(i => i.status === 'pending').length || 0,
+        paidInvoices: invoices.data?.filter(i => i.status === 'paid').length || 0
+      });
+
+      // Set recent data (last 5)
+      setRecentCustomers(customers.data?.slice(0, 5) || []);
+      setRecentEstimates(estimates.data?.slice(0, 5) || []);
+      setRecentInvoices(invoices.data?.slice(0, 5) || []);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+    }
 
     setLoading(false);
   }

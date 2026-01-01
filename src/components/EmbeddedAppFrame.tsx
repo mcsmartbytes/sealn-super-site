@@ -61,23 +61,45 @@ export default function EmbeddedAppFrame({
   const tokenSentRef = useRef(false);
 
   // Build embedded URL without token (token sent via postMessage)
-  useEffect(() => {
+  const buildEmbeddedUrl = useCallback(() => {
     const url = new URL(appUrl);
     url.searchParams.set('embedded', 'true');
     setEmbeddedUrl(url.toString());
     setIsLoading(false);
+    setError(null);
   }, [appUrl]);
+
+  useEffect(() => {
+    buildEmbeddedUrl();
+  }, [buildEmbeddedUrl]);
 
   // Send auth token to iframe via postMessage
   const sendAuthToken = useCallback(async (targetOrigin: string) => {
     if (tokenSentRef.current) return;
+
+    // Check for demo mode - skip Supabase auth
+    const isDemoMode = typeof window !== 'undefined' && localStorage.getItem('demoSession') === 'true';
+    if (isDemoMode) {
+      // In demo mode, just mark as confirmed without sending real token
+      setAuthStatus('confirmed');
+      tokenSentRef.current = true;
+      return;
+    }
+
+    // Check if supabase is available
+    if (!supabase) {
+      console.warn('Supabase not available');
+      setAuthStatus('confirmed'); // Allow iframe to load without auth
+      return;
+    }
 
     try {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
       if (sessionError || !session?.access_token) {
         console.error('Failed to get session for postMessage auth');
-        setError('No active session');
+        // Don't set error - allow iframe to load anyway
+        setAuthStatus('confirmed');
         return;
       }
 
@@ -91,7 +113,8 @@ export default function EmbeddedAppFrame({
       }
     } catch (err) {
       console.error('Error sending auth token:', err);
-      setError('Failed to authenticate embedded app');
+      // Don't block - allow iframe to load
+      setAuthStatus('confirmed');
     }
   }, []);
 
@@ -126,15 +149,23 @@ export default function EmbeddedAppFrame({
 
   // Refresh token and send to iframe periodically
   useEffect(() => {
+    // Skip token refresh in demo mode or if supabase not available
+    const isDemoMode = typeof window !== 'undefined' && localStorage.getItem('demoSession') === 'true';
+    if (isDemoMode || !supabase) return;
+
     const refreshInterval = setInterval(async () => {
       if (authStatus === 'confirmed' && iframeRef.current?.contentWindow) {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.access_token) {
-          const appOrigin = new URL(appUrl).origin;
-          iframeRef.current.contentWindow.postMessage(
-            { type: 'AUTH_TOKEN_REFRESH', token: session.access_token },
-            appOrigin
-          );
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.access_token) {
+            const appOrigin = new URL(appUrl).origin;
+            iframeRef.current.contentWindow.postMessage(
+              { type: 'AUTH_TOKEN_REFRESH', token: session.access_token },
+              appOrigin
+            );
+          }
+        } catch (err) {
+          console.error('Token refresh error:', err);
         }
       }
     }, 10 * 60 * 1000); // Refresh every 10 minutes
