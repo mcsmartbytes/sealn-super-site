@@ -12,27 +12,54 @@ export default function ProtectedRoute({ children }: { children: React.ReactNode
   useEffect(() => {
     checkAuth();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        setAuthenticated(false);
-        router.push('/admin/login');
-      } else if (event === 'SIGNED_IN') {
-        setAuthenticated(true);
-      }
-    });
+    // Only set up Supabase listener if supabase is available
+    if (supabase) {
+      const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_OUT') {
+          // Check if in demo mode before redirecting
+          const isDemoMode = localStorage.getItem('demoSession') === 'true';
+          if (!isDemoMode) {
+            setAuthenticated(false);
+            router.push('/admin/login');
+          }
+        } else if (event === 'SIGNED_IN') {
+          setAuthenticated(true);
+        }
+      });
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
+      return () => {
+        authListener.subscription.unsubscribe();
+      };
+    }
   }, [router]);
 
   const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      router.push('/admin/login');
-    } else {
+    // Check for demo session first
+    const isDemoMode = localStorage.getItem('demoSession') === 'true';
+    if (isDemoMode) {
       setAuthenticated(true);
+      setLoading(false);
+      return;
+    }
+
+    // If no supabase, redirect to login
+    if (!supabase) {
+      router.push('/admin/login');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
+        router.push('/admin/login');
+      } else {
+        setAuthenticated(true);
+      }
+    } catch (err) {
+      console.error('Auth check error:', err);
+      router.push('/admin/login');
     }
     setLoading(false);
   };
