@@ -21,7 +21,14 @@ export default function AdminNav() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    // Clear demo session
+    localStorage.removeItem('demoSession');
+    localStorage.removeItem('presentationMode');
+
+    // Sign out from Supabase if available
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
     router.push('/admin/login');
   };
 
@@ -57,7 +64,7 @@ export default function AdminNav() {
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center space-x-6">
           <Link href="/admin" className="text-xl font-bold text-brand-gold hover:text-yellow-500">
-            Sealn Pro
+            Sealn
           </Link>
           {links.map((link) => (
             <Link
