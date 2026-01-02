@@ -13,6 +13,32 @@ interface QuoteData {
   heights: any[];
   notes: string;
   timestamp: string;
+  // New: Concrete mode data
+  concrete?: {
+    slabs: Array<{
+      id: string;
+      area_sqft: number;
+      thickness_in: number;
+      finish: string;
+      reinforcement: string;
+      demo_included: boolean;
+      cubic_yards: number;
+    }>;
+    lines: Array<{
+      id: string;
+      lineal_feet: number;
+      line_type: 'saw_cut' | 'forming' | 'thickened_edge';
+    }>;
+    totalCubicYards: number;
+    quoteTotal: number;
+  };
+  // New: Stall striping data
+  stallGroups?: Array<{
+    id: string;
+    stall_count: number;
+    lineal_feet: number;
+    row_length_ft: number;
+  }>;
 }
 
 export default function AreaHelperPage() {
@@ -34,27 +60,99 @@ export default function AreaHelperPage() {
         setShowBanner(true);
 
         // Store in sessionStorage for the estimate form to pick up
-        const calculatorItems = [
-          {
+        const calculatorItems: Array<{
+          service_id: string;
+          service_name: string;
+          description: string;
+          quantity: number;
+          unit_price: number;
+        }> = [];
+
+        // Handle Concrete mode data
+        if (quoteData.concrete) {
+          const { slabs, lines, totalCubicYards, quoteTotal } = quoteData.concrete;
+
+          // Add concrete summary
+          calculatorItems.push({
+            service_id: "",
+            service_name: `Concrete Work: ${quoteData.totalArea.toFixed(0)} sq ft`,
+            description: `${slabs.length} slab(s), ${totalCubicYards.toFixed(2)} yd³ total`,
+            quantity: Math.ceil(quoteData.totalArea),
+            unit_price: quoteTotal > 0 ? quoteTotal / Math.ceil(quoteData.totalArea) : 0
+          });
+
+          // Add individual slabs
+          slabs.forEach((slab, idx) => {
+            calculatorItems.push({
+              service_id: "",
+              service_name: `Slab ${idx + 1}: ${slab.area_sqft.toFixed(0)} sq ft`,
+              description: `${slab.thickness_in}" thick, ${slab.finish} finish, ${slab.reinforcement}${slab.demo_included ? ', includes demo' : ''} - ${slab.cubic_yards.toFixed(2)} yd³`,
+              quantity: Math.ceil(slab.area_sqft),
+              unit_price: 0
+            });
+          });
+
+          // Add line items (saw cuts, forming, etc.)
+          lines.forEach((line, idx) => {
+            const typeLabels: Record<string, string> = {
+              saw_cut: 'Saw Cuts',
+              forming: 'Forming',
+              thickened_edge: 'Thickened Edge'
+            };
+            calculatorItems.push({
+              service_id: "",
+              service_name: `${typeLabels[line.line_type] || line.line_type}: ${line.lineal_feet} lf`,
+              description: `Linear measurement for ${typeLabels[line.line_type]?.toLowerCase() || line.line_type}`,
+              quantity: Math.ceil(line.lineal_feet),
+              unit_price: 0
+            });
+          });
+        }
+        // Handle Stall striping data
+        else if (quoteData.stallGroups && quoteData.stallGroups.length > 0) {
+          const totalStalls = quoteData.stallGroups.reduce((sum, g) => sum + g.stall_count, 0);
+          const totalLinealFeet = quoteData.stallGroups.reduce((sum, g) => sum + g.lineal_feet, 0);
+
+          calculatorItems.push({
+            service_id: "",
+            service_name: `Parking Lot Striping: ${totalStalls} stalls`,
+            description: `${quoteData.stallGroups.length} row(s), ${totalLinealFeet.toFixed(0)} lineal feet total`,
+            quantity: totalStalls,
+            unit_price: 0
+          });
+
+          quoteData.stallGroups.forEach((group, idx) => {
+            calculatorItems.push({
+              service_id: "",
+              service_name: `Row ${idx + 1}: ${group.stall_count} stalls`,
+              description: `Row length: ${group.row_length_ft.toFixed(1)} ft, ${group.lineal_feet.toFixed(0)} lf striping`,
+              quantity: group.stall_count,
+              unit_price: 0
+            });
+          });
+        }
+        // Default: standard area measurement
+        else {
+          calculatorItems.push({
             service_id: "",
             service_name: `Area Measurement: ${quoteData.totalArea.toFixed(0)} sq ft`,
             description: `Total Area: ${quoteData.totalArea.toFixed(0)} sq ft, Perimeter: ${quoteData.totalPerimeter.toFixed(0)} ft${quoteData.notes ? ` - Notes: ${quoteData.notes}` : ''}`,
             quantity: Math.ceil(quoteData.totalArea),
             unit_price: 0
-          }
-        ];
-
-        // Add individual shapes if there are multiple
-        if (quoteData.shapes && quoteData.shapes.length > 1) {
-          quoteData.shapes.forEach((shape, idx) => {
-            calculatorItems.push({
-              service_id: "",
-              service_name: `Area ${idx + 1}: ${shape.area.toFixed(0)} sq ft`,
-              description: `Shape ${idx + 1}: ${shape.area.toFixed(0)} sq ft, Perimeter: ${shape.perimeter.toFixed(0)} ft`,
-              quantity: Math.ceil(shape.area),
-              unit_price: 0
-            });
           });
+
+          // Add individual shapes if there are multiple
+          if (quoteData.shapes && quoteData.shapes.length > 1) {
+            quoteData.shapes.forEach((shape, idx) => {
+              calculatorItems.push({
+                service_id: "",
+                service_name: `Area ${idx + 1}: ${shape.area.toFixed(0)} sq ft`,
+                description: `Shape ${idx + 1}: ${shape.area.toFixed(0)} sq ft, Perimeter: ${shape.perimeter.toFixed(0)} ft`,
+                quantity: Math.ceil(shape.area),
+                unit_price: 0
+              });
+            });
+          }
         }
 
         sessionStorage.setItem("calculatorItems", JSON.stringify(calculatorItems));
@@ -89,8 +187,23 @@ export default function AreaHelperPage() {
           }}>
             <div>
               <strong>Measurement Received!</strong>{' '}
-              {receivedData.totalArea.toFixed(0)} sq ft, {receivedData.totalPerimeter.toFixed(0)} ft perimeter
-              {receivedData.shapes.length > 1 && ` (${receivedData.shapes.length} shapes)`}
+              {receivedData.concrete ? (
+                <>
+                  {receivedData.totalArea.toFixed(0)} sq ft concrete, {receivedData.concrete.totalCubicYards.toFixed(2)} yd³
+                  {receivedData.concrete.slabs.length > 0 && ` (${receivedData.concrete.slabs.length} slab${receivedData.concrete.slabs.length > 1 ? 's' : ''})`}
+                  {receivedData.concrete.lines.length > 0 && `, ${receivedData.concrete.lines.reduce((sum, l) => sum + l.lineal_feet, 0).toFixed(0)} lf cuts/forming`}
+                </>
+              ) : receivedData.stallGroups && receivedData.stallGroups.length > 0 ? (
+                <>
+                  {receivedData.stallGroups.reduce((sum, g) => sum + g.stall_count, 0)} stalls, {receivedData.stallGroups.reduce((sum, g) => sum + g.lineal_feet, 0).toFixed(0)} lf striping
+                  {` (${receivedData.stallGroups.length} row${receivedData.stallGroups.length > 1 ? 's' : ''})`}
+                </>
+              ) : (
+                <>
+                  {receivedData.totalArea.toFixed(0)} sq ft, {receivedData.totalPerimeter.toFixed(0)} ft perimeter
+                  {receivedData.shapes.length > 1 && ` (${receivedData.shapes.length} shapes)`}
+                </>
+              )}
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
