@@ -33,6 +33,12 @@ const ALLOWED_ORIGINS = [
   'https://crm-made-easy.vercel.app',
   'https://expenses-made-easy-opal.vercel.app',
   'https://books-made-easy-app.vercel.app',
+  // Made Easy Monorepo apps
+  'https://sealing-striping-michelles-projects-54c2f766.vercel.app',
+  'https://roofing-michelles-projects-54c2f766.vercel.app',
+  'https://concrete-michelles-projects-54c2f766.vercel.app',
+  'https://landscaping-michelles-projects-54c2f766.vercel.app',
+  'https://general-contractor-michelles-projects-54c2f766.vercel.app',
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:3002',
