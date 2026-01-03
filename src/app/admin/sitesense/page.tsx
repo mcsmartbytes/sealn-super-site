@@ -18,7 +18,7 @@ function SiteSenseContent() {
       <AdminNav />
       <div className="container mx-auto px-6 py-8">
         <EmbeddedAppFrame
-          appUrl="https://sealing-striping-michelles-projects-54c2f766.vercel.app/dashboard"
+          appUrl="https://sealing-striping-michelles-projects-54c2f766.vercel.app/dashboard?x-vercel-protection-bypass=VD2hSzFuZfei09rkkpNgRmMFY0wcJL0o"
           appName="Seal'n & Stripe'n Pro"
           appIcon="🅿️"
           standaloneUrl="https://sealing-striping-michelles-projects-54c2f766.vercel.app"
