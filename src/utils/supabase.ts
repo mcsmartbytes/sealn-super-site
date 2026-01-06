@@ -7,7 +7,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 export const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey, {
       db: {
-        schema: 'sealn'  // Use sealn schema in unified database
+        schema: 'public'  // Use public schema (default exposed by Supabase API)
       }
     })
   : null as any;

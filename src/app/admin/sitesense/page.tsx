@@ -18,10 +18,10 @@ function SiteSenseContent() {
       <AdminNav />
       <div className="container mx-auto px-6 py-8">
         <EmbeddedAppFrame
-          appUrl="https://sealing-striping-michelles-projects-54c2f766.vercel.app/dashboard?x-vercel-protection-bypass=VD2hSzFuZfei09rkkpNgRmMFY0wcJL0o"
-          appName="Seal'n & Stripe'n Pro"
-          appIcon="🅿️"
-          standaloneUrl="https://sealing-striping-michelles-projects-54c2f766.vercel.app"
+          appUrl="https://sitesense-lilac.vercel.app"
+          appName="SiteSense"
+          appIcon="📍"
+          standaloneUrl="https://sitesense-lilac.vercel.app"
           description="Professional parking lot management - jobs, quotes, scheduling, crew management, and more."
           headerColor="from-blue-900 to-slate-800"
           fullscreenHeaderColor="bg-blue-900"

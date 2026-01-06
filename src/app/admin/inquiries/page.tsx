@@ -28,7 +28,7 @@ export default function InquiriesPage() {
   async function fetchInquiries() {
     setLoading(true);
     let query = supabase
-      .from("contact_request")
+      .from("contacts")
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -49,7 +49,7 @@ export default function InquiriesPage() {
 
   async function updateStatus(id: number, newStatus: string) {
     const { error } = await supabase
-      .from("contact_request")
+      .from("contacts")
       .update({ status: newStatus })
       .eq("id", id);
 
@@ -67,7 +67,7 @@ export default function InquiriesPage() {
     if (!confirmed) return;
 
     const { error } = await supabase
-      .from("contact_request")
+      .from("contacts")
       .delete()
       .eq("id", id);
 
