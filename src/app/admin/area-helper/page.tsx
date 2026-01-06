@@ -5,6 +5,15 @@ import { useRouter } from "next/navigation";
 import AdminNav from "@/components/AdminNav";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
+interface QuoteLine {
+  serviceId: string;
+  serviceName: string;
+  measurementValue: number;
+  rate: number;
+  minimum: number;
+  subtotal: number;
+}
+
 interface QuoteData {
   totalArea: number;
   totalPerimeter: number;
@@ -13,7 +22,11 @@ interface QuoteData {
   heights: any[];
   notes: string;
   timestamp: string;
-  // New: Concrete mode data
+  address?: string;
+  // New: Quote line items with pricing
+  lines?: QuoteLine[];
+  total?: number;
+  // Concrete mode data
   concrete?: {
     slabs: Array<{
       id: string;
@@ -32,7 +45,7 @@ interface QuoteData {
     totalCubicYards: number;
     quoteTotal: number;
   };
-  // New: Stall striping data
+  // Stall striping data
   stallGroups?: Array<{
     id: string;
     stall_count: number;
@@ -131,6 +144,19 @@ export default function AreaHelperPage() {
             });
           });
         }
+        // Check for new line items format (from quote store)
+        else if (quoteData.lines && quoteData.lines.length > 0) {
+          // Use the structured line items with pricing
+          quoteData.lines.forEach((line) => {
+            calculatorItems.push({
+              service_id: line.serviceId || "",
+              service_name: line.serviceName || "Service",
+              description: `${line.measurementValue.toFixed(0)} ${line.measurementValue > 100 ? 'sq ft' : 'lf'} @ $${line.rate.toFixed(2)}`,
+              quantity: Math.ceil(line.measurementValue),
+              unit_price: line.rate
+            });
+          });
+        }
         // Default: standard area measurement
         else {
           calculatorItems.push({
@@ -186,8 +212,20 @@ export default function AreaHelperPage() {
             boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
           }}>
             <div>
-              <strong>Measurement Received!</strong>{' '}
-              {receivedData.concrete ? (
+              <strong>Quote Ready!</strong>{' '}
+              {receivedData.lines && receivedData.lines.length > 0 ? (
+                <>
+                  {receivedData.lines.length} service{receivedData.lines.length > 1 ? 's' : ''}{' '}
+                  {receivedData.total && receivedData.total > 0 && (
+                    <strong style={{ marginLeft: 8, fontSize: '1.1em' }}>
+                      ${receivedData.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </strong>
+                  )}
+                  {receivedData.address && (
+                    <span style={{ opacity: 0.9, marginLeft: 8 }}>- {receivedData.address}</span>
+                  )}
+                </>
+              ) : receivedData.concrete ? (
                 <>
                   {receivedData.totalArea.toFixed(0)} sq ft concrete, {receivedData.concrete.totalCubicYards.toFixed(2)} yd³
                   {receivedData.concrete.slabs.length > 0 && ` (${receivedData.concrete.slabs.length} slab${receivedData.concrete.slabs.length > 1 ? 's' : ''})`}
@@ -238,9 +276,9 @@ export default function AreaHelperPage() {
         )}
 
         <div style={{ flex: 1, position: 'relative' }}>
-          {/* Embed the live area-bid-helper app */}
+          {/* Embed the live area-bid-helper app with industry preset */}
           <iframe
-            src="https://area-bid-helper.vercel.app"
+            src="https://area-bid-helper.vercel.app/quote/map?industry=sealing-striping&embedded=true"
             style={{
               width: '100%',
               height: '100%',
