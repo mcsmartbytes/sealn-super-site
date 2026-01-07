@@ -115,12 +115,12 @@ export default function LoginPage() {
 
           <button
             onClick={handleDemoLogin}
-            className="mt-4 w-full py-3 bg-brand-navy text-white font-bold text-lg rounded-lg hover:bg-blue-800 transition"
+            className="mt-4 w-full py-3 bg-slate-700 text-white font-bold text-lg rounded-lg hover:bg-slate-800 transition"
           >
-            Demo Login
+            Preview Mode
           </button>
           <p className="text-xs text-gray-500 text-center mt-2">
-            Access demo mode with sample data
+            Access preview mode with sample data
           </p>
         </div>
 

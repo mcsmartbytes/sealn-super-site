@@ -90,14 +90,14 @@ export default function AdminNav() {
         <div className="flex items-center space-x-4">
           <button
             onClick={toggleDemoMode}
-            className={`px-3 py-1 rounded text-sm transition ${
+            className={`px-3 py-1 rounded text-sm font-medium transition ${
               demoMode
-                ? 'bg-amber-600 text-white hover:bg-amber-700'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
             }`}
-            title={demoMode ? 'Exit Demo Mode' : 'Enter Demo Mode'}
+            title={demoMode ? 'Exit Preview Mode' : 'Enter Preview Mode'}
           >
-            {demoMode ? 'Demo ON' : 'Demo'}
+            {demoMode ? 'Preview Mode' : 'Preview'}
           </button>
           <button
             onClick={handleLogout}

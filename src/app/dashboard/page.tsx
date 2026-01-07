@@ -478,6 +478,13 @@ function DashboardContent() {
             )}
           </div>
         </div>
+
+        {/* Professional Footer */}
+        <footer className="mt-12 py-4 border-t border-slate-200">
+          <p className="text-center text-sm text-slate-500">
+            © {new Date().getFullYear()} MC Smart Bytes · Secure · Role-Based Access
+          </p>
+        </footer>
       </div>
     </div>
   );
