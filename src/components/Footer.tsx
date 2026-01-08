@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -13,6 +14,7 @@ export default function Footer() {
             <h4 className="font-bold text-brand-gold mb-4">Contact</h4>
             <p className="text-gray-300">Email: gary@sealnstripenspecialist.com</p>
             <p className="text-gray-300">Phone: (555) 123-4567</p>
+            <p className="text-gray-300 mt-2">Chicago Metropolitan Area</p>
           </div>
           <div>
             <h4 className="font-bold text-brand-gold mb-4">Services</h4>
@@ -44,15 +46,30 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        <div className="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-          <p>&copy; 2025 Seal'n & Stripe'n Specialist. All rights reserved.</p>
-          <p className="mt-2 text-sm">
-            <Link href="/privacy" className="hover:text-brand-gold transition">Privacy Policy</Link>
-            {' | '}
-            <Link href="/terms" className="hover:text-brand-gold transition">Terms of Service</Link>
-            {' | '}
-            <Link href="/admin/login" className="hover:text-brand-gold transition">Admin</Link>
-          </p>
+        <div className="border-t border-gray-700 mt-8 pt-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-gray-400 text-center md:text-left">
+              <p>&copy; 2026 Seal'n & Stripe'n Specialist. All rights reserved.</p>
+              <p className="mt-1 text-sm">
+                <Link href="/privacy" className="hover:text-brand-gold transition">Privacy Policy</Link>
+                {' | '}
+                <Link href="/terms" className="hover:text-brand-gold transition">Terms of Service</Link>
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-gray-500 text-sm">Powered by</span>
+              <Link href="https://mcsmartbytes.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-80 transition">
+                <Image
+                  src="/mc-smart-bytes-logo.png"
+                  alt="MC Smart Bytes"
+                  width={32}
+                  height={32}
+                  className="rounded"
+                />
+                <span className="text-gray-300 font-medium text-sm">MC Smart Bytes</span>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

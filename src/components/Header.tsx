@@ -24,17 +24,17 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link href="#services" className="text-white hover:text-brand-gold transition font-medium">
+              <Link href="/#services" className="text-white hover:text-brand-gold transition font-medium">
                 Services
               </Link>
             </li>
             <li>
-              <Link href="#portfolio" className="text-white hover:text-brand-gold transition font-medium">
+              <Link href="/#portfolio" className="text-white hover:text-brand-gold transition font-medium">
                 Portfolio
               </Link>
             </li>
             <li>
-              <Link href="#contact" className="text-white hover:text-brand-gold transition font-medium">
+              <Link href="/#contact" className="text-white hover:text-brand-gold transition font-medium">
                 Contact
               </Link>
             </li>
@@ -66,17 +66,17 @@ export default function Header() {
                 </Link>
               </li>
               <li>
-                <Link href="#services" onClick={() => setMobileMenuOpen(false)} className="block text-white hover:text-brand-gold transition font-medium">
+                <Link href="/#services" onClick={() => setMobileMenuOpen(false)} className="block text-white hover:text-brand-gold transition font-medium">
                   Services
                 </Link>
               </li>
               <li>
-                <Link href="#portfolio" onClick={() => setMobileMenuOpen(false)} className="block text-white hover:text-brand-gold transition font-medium">
+                <Link href="/#portfolio" onClick={() => setMobileMenuOpen(false)} className="block text-white hover:text-brand-gold transition font-medium">
                   Portfolio
                 </Link>
               </li>
               <li>
-                <Link href="#contact" onClick={() => setMobileMenuOpen(false)} className="block text-white hover:text-brand-gold transition font-medium">
+                <Link href="/#contact" onClick={() => setMobileMenuOpen(false)} className="block text-white hover:text-brand-gold transition font-medium">
                   Contact
                 </Link>
               </li>
