@@ -60,13 +60,13 @@ export default function Footer() {
               <span className="text-gray-500 text-sm">Powered by</span>
               <Link href="https://mcsmartbytes.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-80 transition">
                 <Image
-                  src="/mc-smart-bytes-logo.png"
+                  src="/mc-smart-bytes-logo.jpg"
                   alt="MC Smart Bytes"
-                  width={32}
-                  height={32}
-                  className="rounded"
+                  width={36}
+                  height={36}
+                  className="rounded-md"
                 />
-                <span className="text-gray-300 font-medium text-sm">MC Smart Bytes</span>
+                <span className="text-brand-gold font-semibold text-sm">MC Smart Bytes</span>
               </Link>
             </div>
           </div>
